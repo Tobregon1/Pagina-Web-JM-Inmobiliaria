@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | JM Inmobiliaria</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .admin-section {
+            padding: 50px 0;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .logout-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            text-align: center;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logoJM.png" alt="JM Inmobiliaria Logo">
+            </a>
+            <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <section class="admin-section">
+        <div class="container">
+            <div class="admin-header">
+                <h1 class="section-title">Panel de Administración</h1>
+            </div>
+
+            <div class="admin-form">
+                <h2>Agregar Nueva Propiedad</h2>
+                <form id="addPropertyForm">
+                    <div class="form-group">
+                        <label for="title">Título</label>
+                        <input type="text" id="title" required placeholder="Ej: Casa Moderna en Centro">
+                    </div>
+
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <label for="price">Precio (USD/ARS)</label>
+                            <input type="number" id="price" required placeholder="Ej: 150000">
+                        </div>
+                        <div>
+                            <label for="type">Operación</label>
+                            <select id="type" required>
+                                <option value="buy">Venta</option>
+                                <option value="rent">Alquiler</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Ubicación</label>
+                        <input type="text" id="location" required placeholder="Ej: Palermo, Buenos Aires">
+                    </div>
+
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                        <div>
+                            <label for="bedrooms">Habitaciones</label>
+                            <input type="number" id="bedrooms" required placeholder="2">
+                        </div>
+                        <div>
+                            <label for="bathrooms">Baños</label>
+                            <input type="number" id="bathrooms" required placeholder="1">
+                        </div>
+                        <div>
+                            <label for="size">Metros Cuadrados</label>
+                            <input type="number" id="size" required placeholder="85">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Descripción</label>
+                        <textarea id="description" rows="4" required
+                            placeholder="Descripción detallada de la propiedad..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">Imagen Principal</label>
+                        <input type="file" id="image" accept="image/*" required>
+                    </div>
+
+                    <button type="submit" class="cta-button"
+                        style="width: 100%; border: none; cursor: pointer;">Publicar Propiedad</button>
+
+                    <div id="message"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/supabase.js"></script>
+    <script>
+        // Check Auth
+        async function checkAuth() {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+            }
+        }
+        checkAuth();
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await window.supabaseClient.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        // Form Submission
+        document.getElementById('addPropertyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const messageDiv = document.getElementById('message');
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // Reset message
+            messageDiv.style.display = 'none';
+            messageDiv.className = '';
+            submitBtn.textContent = 'Publicando...';
+            form.classList.add('loading');
+
+            try {
+                // 1. Upload Image
+                const fileInput = document.getElementById('image');
+                const file = fileInput.files[0];
+                const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
+
+                const { data: uploadData, error: uploadError } = await window.supabaseClient
+                    .storage
+                    .from('images')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                // Get Public URL
+                const { data: { publicUrl } } = window.supabaseClient
+                    .storage
+                    .from('images')
+                    .getPublicUrl(fileName);
+
+                // 2. Insert Data
+                const { error: insertError } = await window.supabaseClient
+                    .from('properties')
+                    .insert([{
+                        title: document.getElementById('title').value,
+                        price: document.getElementById('price').value,
+                        type: document.getElementById('type').value,
+                        location: document.getElementById('location').value,
+                        bedrooms: document.getElementById('bedrooms').value,
+                        bathrooms: document.getElementById('bathrooms').value,
+                        size_m2: document.getElementById('size').value,
+                        description: document.getElementById('description').value,
+                        image_url: publicUrl
+                    }]);
+
+                if (insertError) throw insertError;
+
+                // Success
+                messageDiv.textContent = '¡Propiedad publicada con éxito!';
+                messageDiv.classList.add('success');
+                messageDiv.style.display = 'block';
+                form.reset();
+
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'Error: ' + error.message;
+                messageDiv.classList.add('error');
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.textContent = 'Publicar Propiedad';
+                form.classList.remove('loading');
+            }
+        });
+    </script>
+</body>
+
+</html>

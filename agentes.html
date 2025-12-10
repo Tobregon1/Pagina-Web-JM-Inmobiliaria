@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestros Agentes | JM Inmobiliaria</title>
+    <meta name="description" content="Conocé al equipo de profesionales de JM Inmobiliaria.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .agent-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .agent-image {
+            height: 300px;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+
+        .agent-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .agent-info {
+            padding: 20px;
+        }
+
+        .agent-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .agent-role {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .agent-contact {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .agent-contact li {
+            margin-bottom: 8px;
+            color: var(--light-text);
+            font-size: 14px;
+        }
+
+        .agent-contact i {
+            color: var(--secondary-color);
+            width: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logoJM.png" alt="JM Inmobiliaria Logo">
+            </a>
+
+            <button class="mobile-menu-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li class="dropdown">
+                        <a href="index.html" class="nav-link">Inicio <i class="fas fa-chevron-down"
+                                style="font-size: 12px; margin-left: 5px;"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="index.html?type=buy#propiedades" class="dropdown-item">Comprar</a></li>
+                            <li><a href="index.html?type=rent#propiedades" class="dropdown-item">Alquilar</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="agentes.html" class="nav-link active">Agentes</a></li>
+                    <li><a href="sobre-nosotros.html" class="nav-link">Sobre Nosotros</a></li>
+                    <li><a href="contacto.html" class="nav-link contact-btn">Contacto</a></li>
+                    <li><a href="login.html" class="nav-link"><i class="fas fa-user"></i> Iniciar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Title -->
+    <section class="section-padding"
+        style="background-color: var(--primary-color); padding-bottom: 50px; padding-top: 50px;">
+        <div class="container">
+            <h1 class="section-title" style="text-align: center; color: var(--white);">Nuestro Equipo</h1>
+            <p style="text-align: center; max-width: 600px; margin: 0 auto; color: var(--white);">
+                Conocé a los profesionales dedicados a ayudarte a encontrar tu propiedad ideal.
+            </p>
+        </div>
+    </section>
+
+    <!-- Agents Grid -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="agents-grid">
+                <!-- Agent 1 -->
+                <article class="agent-card">
+                    <div class="agent-image">
+                        <i class="fas fa-user-tie fa-5x"></i>
+                    </div>
+                    <div class="agent-info">
+                        <h3 class="agent-name">Juan Pérez</h3>
+                        <p class="agent-role">Gerente de Ventas</p>
+                        <p>Especialista en propiedades residenciales de lujo con más de 10 años de experiencia.</p>
+                        <ul class="agent-contact">
+                            <li><i class="fas fa-phone"></i> +54 11 1234-5678</li>
+                            <li><i class="fas fa-envelope"></i> juan@jminmobiliaria.com</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <!-- Agent 2 -->
+                <article class="agent-card">
+                    <div class="agent-image">
+                        <i class="fas fa-user-tie fa-5x"></i>
+                    </div>
+                    <div class="agent-info">
+                        <h3 class="agent-name">María González</h3>
+                        <p class="agent-role">Agente Inmobiliario</p>
+                        <p>Experta en alquileres y administración de propiedades en CABA.</p>
+                        <ul class="agent-contact">
+                            <li><i class="fas fa-phone"></i> +54 11 8765-4321</li>
+                            <li><i class="fas fa-envelope"></i> maria@jminmobiliaria.com</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <!-- Agent 3 -->
+                <article class="agent-card">
+                    <div class="agent-image">
+                        <i class="fas fa-user-tie fa-5x"></i>
+                    </div>
+                    <div class="agent-info">
+                        <h3 class="agent-name">Carlos Rodríguez</h3>
+                        <p class="agent-role">Asesor Comercial</p>
+                        <p>Enfocado en oportunidades de inversión y desarrollos inmobiliarios.</p>
+                        <ul class="agent-contact">
+                            <li><i class="fas fa-phone"></i> +54 11 1122-3344</li>
+                            <li><i class="fas fa-envelope"></i> carlos@jminmobiliaria.com</li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <img src="assets/images/logoJM(Blanco).png" alt="JM Inmobiliaria" class="logo"
+                    style="background-color: transparent; width: 50px; height: 50px;">
+                <p>Tu socio de confianza en el mercado inmobiliario. Encontramos el hogar perfecto para vos.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Propiedades</h4>
+                <ul>
+                    <li><a href="index.html?type=buy#propiedades">Comprar</a></li>
+                    <li><a href="index.html?type=rent#propiedades">Alquilar</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Empresa</h4>
+                <ul>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="agentes.html">Agentes</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul class="contact-info">
+                    <li><i class="fas fa-phone"></i> <a href="https://wa.me/+5493794004024" style="color: #cccccc;">+54
+                            9 3794004024</a></li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:jmnegocios.inmobiliario25@gmail.com"
+                            style="color: #cccccc;">jmnegocios.inmobiliario25@gmail.com</a></li>
+                    <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/jKDJZ1wTnjcjiMpU7"
+                            style="color: #cccccc;">Av. Raul Alfonsín 4850, Corrientes Capital, Argentina</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2025 JM Inmobiliaria. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="scrollToTopBtn" title="Ir arriba"><i class="fas fa-chevron-up"></i></button>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>

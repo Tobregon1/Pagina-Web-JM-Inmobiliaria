@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | JM Inmobiliaria</title>
+    <meta name="description" content="Contactanos para encontrar tu próxima propiedad. Estamos para ayudarte.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Fixed Header Override for this page */
+        .header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        body {
+            padding-top: 100px;
+            /* Compensate for header height */
+        }
+
+        /* Improved Grid Layout */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        /* Responsive Fix for Mobile */
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        /* Restyle Contact Info for Main Page */
+        .main-contact-info {
+            list-style: none;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        .main-contact-info li {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .main-contact-info i {
+            font-size: 22px;
+            color: var(--primary-color);
+            margin-right: 15px;
+            margin-top: 3px;
+            width: 25px;
+            /* Fixed width for alignment */
+            text-align: center;
+        }
+
+        .main-contact-info strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 18px;
+            color: var(--text-color);
+        }
+
+        .main-contact-info a,
+        .main-contact-info span {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+            display: inline-block;
+        }
+
+        .main-contact-info a:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logoJM.png" alt="JM Inmobiliaria Logo">
+            </a>
+
+            <button class="mobile-menu-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li class="dropdown">
+                        <a href="index.html" class="nav-link">Inicio <i class="fas fa-chevron-down"
+                                style="font-size: 12px; margin-left: 5px;"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="index.html?type=buy#propiedades" class="dropdown-item">Comprar</a></li>
+                            <li><a href="index.html?type=rent#propiedades" class="dropdown-item">Alquilar</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="agentes.html" class="nav-link">Agentes</a></li>
+                    <li><a href="sobre-nosotros.html" class="nav-link">Sobre Nosotros</a></li>
+                    <li><a href="contacto.html" class="nav-link contact-btn active">Contacto</a></li>
+                    <li><a href="login.html" class="nav-link"><i class="fas fa-user"></i> Iniciar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Title -->
+    <section class="section-padding"
+        style="background-color: var(--primary-color); padding-bottom: 50px; padding-top: 50px;">
+        <div class="container">
+            <h1 class="section-title" style="text-align: center; color: var(--white);">Contactanos</h1>
+            <p style="text-align: center; max-width: 600px; margin: 0 auto; color: var(--white);">
+                Estamos listos para asesorarte en tu búsqueda. Completá el formulario y un agente se pondrá en contacto
+                con vos a la brevedad.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Content -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="container">
+                <div class="contact-grid">
+
+                    <!-- Contact Info -->
+                    <div>
+                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 30px;">Información de Contacto
+                        </h2>
+                        <ul class="main-contact-info">
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <strong>Dirección</strong>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Av.+Libertador+1234,+Ciudad+Autónoma+de+Buenos+Aires"
+                                        target="_blank">Av. Libertador 1234, Ciudad Autónoma de Buenos Aires</a>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <strong>Teléfono</strong>
+                                    <a href="https://wa.me/+5493794633370">+54 9 3794633370</a>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <strong>Email</strong>
+                                    <a href="mailto:info@jminmobiliaria.com">info@jminmobiliaria.com</a>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <strong>Horarios</strong>
+                                    <span>Lunes a Viernes: 9:00 - 18:00 hs<br>Sábados: 9:00 - 13:00 hs</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="login-card" style="margin: 0; max-width: 100%; text-align: left;">
+                        <h3 style="margin-bottom: 25px; font-size: 22px;">Envianos un mensaje</h3>
+                        <form id="mainContactForm">
+                            <div class="form-group">
+                                <label for="contact-name">Nombre Completo</label>
+                                <input type="text" id="contact-name" placeholder="Tu nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-email">Email</label>
+                                <input type="email" id="contact-email" placeholder="Tu email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-phone">Teléfono</label>
+                                <input type="tel" id="contact-phone" placeholder="Tu teléfono" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-subject">Asunto</label>
+                                <select id="contact-subject" class="search-select"
+                                    style="border: 1px solid var(--border-color); padding: 12px; border-radius: 5px; width: 100%;">
+                                    <option value="consulta">Consulta General</option>
+                                    <option value="comprar">Quiero Comprar</option>
+                                    <option value="alquilar">Quiero Alquilar</option>
+                                    <option value="vender">Quiero Vender mi propiedad</option>
+                                    <option value="tasacion">Solicitar Tasación</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-message">Mensaje</label>
+                                <textarea id="contact-message" rows="5" placeholder="¿En qué podemos ayudarte?"
+                                    style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px;"></textarea>
+                            </div>
+                            <button type="submit" class="contact-agent-btn">Enviar Mensaje</button>
+                        </form>
+                        <div id="mainFormSuccess" class="success-message">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>¡Mensaje Enviado!</h3>
+                            <p>Gracias por contactarnos. Nos comunicaremos con vos a la brevedad.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <img src="assets/images/logoJM(Blanco).png" alt="JM Inmobiliaria" class="footer-logo"
+                    style="background-color: transparent; width: 50px; height: 50px;">
+                <p>Tu socio de confianza en el mercado inmobiliario.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Propiedades</h4>
+                <ul>
+                    <li><a href="index.html?type=buy#propiedades">Comprar</a></li>
+                    <li><a href="index.html?type=rent#propiedades">Alquilar</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Empresa</h4>
+                <ul>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="agentes.html">Agentes</a></li>
+                    <li><a href="contacto.html" style="color: var(--white);">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul class="contact-info">
+                    <li><i class="fas fa-phone"></i> <a href="https://wa.me/+5493794004024" style="color: #cccccc;">+54
+                            9
+                            3794004024</a></li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:jmnegocios.inmobiliario25@gmail.com"
+                            style="color: #cccccc;">jmnegocios.inmobiliario25@gmail.com</a></li>
+                    <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/jKDJZ1wTnjcjiMpU7"
+                            style="color: #cccccc;">Av. Raul Alfonsín 4850, CABA</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 JM Inmobiliaria. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="scrollToTopBtn" title="Ir arriba"><i class="fas fa-chevron-up"></i></button>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Specific script for main contact form
+        const mainForm = document.getElementById('mainContactForm');
+        const mainSuccess = document.getElementById('mainFormSuccess');
+
+        if (mainForm) {
+            mainForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Simple validation could go here like in script.js
+
+                const btn = mainForm.querySelector('button[type="submit"]');
+                const originalText = btn.textContent;
+                btn.classList.add('btn-loading');
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    mainForm.style.display = 'none';
+                    mainSuccess.style.display = 'block';
+                    mainForm.reset();
+                    btn.classList.remove('btn-loading');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+
+</html>

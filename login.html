@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | JM Inmobiliaria</title>
+    <meta name="description" content="Inicia sesión en JM Inmobiliaria para gestionar tus propiedades favoritas.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style></style>
+</head>
+
+<body class="login-page">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logoJM.png" alt="JM Inmobiliaria Logo">
+            </a>
+
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Volver al Inicio</a></li>
+                    <li><a href="#" class="nav-link contact-btn">Iniciar sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <div class="login-card">
+                <h2 class="login-title">Ingresá tu email</h2>
+                <form class="login-form">
+                    <div class="form-group">
+                        <label for="email" class="visually-hidden">Email</label>
+                        <input type="email" id="email" placeholder="Email*" required>
+                    </div>
+                    <div class="form-group password-group">
+                        <label for="password" class="visually-hidden">Contraseña</label>
+                        <input type="password" id="password" placeholder="Contraseña*" required>
+                        <i class="far fa-eye toggle-password"></i>
+                    </div>
+
+                    <button type="submit" class="login-btn">Continuar</button>
+
+                    <a href="#" class="forgot-password">Olvidé mi contraseña</a>
+
+                    <div class="divider"></div>
+
+                    <div class="social-login">
+                        <button type="button" class="btn-social">
+                            <i class="fab fa-facebook-f"></i> Ingresar con Facebook
+                        </button>
+                        <button type="button" class="btn-social">
+                            <i class="fab fa-google"></i> Ingresar con Google
+                        </button>
+                    </div>
+
+                    <div class="register-link">
+                        <p>Si no tenés cuenta <a href="#">Registrate acá</a></p>
+                        <p class="legal-text">
+                            Al registrarme acepto los <a href="#">términos, condiciones</a> y <a href="#">políticas de
+                                privacidad</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <img src="assets/images/logoJM(Blanco).png" alt="JM Inmobiliaria" class="logo"
+                    style="background-color: transparent; width: 50px; height: 50px;">
+                <p>Tu socio de confianza en el mercado inmobiliario. Encontramos el hogar perfecto para vos.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Propiedades</h4>
+                <ul>
+                    <li><a href="index.html?type=buy#propiedades">Comprar</a></li>
+                    <li><a href="index.html?type=rent#propiedades">Alquilar</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Empresa</h4>
+                <ul>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="agentes.html">Agentes</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul class="contact-info">
+                    <li><i class="fas fa-phone"></i> <a href="https://wa.me/+5493794004024" style="color: #cccccc;">+54
+                            9 3794004024</a></li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:jmnegocios.inmobiliario25@gmail.com"
+                            style="color: #cccccc;">jmnegocios.inmobiliario25@gmail.com</a></li>
+                    <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/jKDJZ1wTnjcjiMpU7"
+                            style="color: #cccccc;">Av. Raul Alfonsín 4850, Corrientes Capital, Argentina</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2025 JM Inmobiliaria. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/supabase.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-message');
+            const button = loginForm.querySelector('button');
+
+            // Reset UI
+            errorMsg.style.display = 'none';
+            button.innerText = 'Iniciando sesión...';
+            button.disabled = true;
+
+            try {
+                const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) throw error;
+
+                // Success
+                window.location.href = 'admin.html';
+
+            } catch (error) {
+                console.error("Login Error:", error);
+                errorMsg.innerText = "Credenciales incorrectas. Por favor intente nuevamente.";
+                errorMsg.style.display = 'block';
+                button.innerText = 'Continuar';
+                button.disabled = false;
+            }
+        });
+
+        // Check if already logged in
+        async function checkSession() {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (session) {
+                window.location.href = 'admin.html';
+            }
+        }
+        checkSession();
+    </script>
+</body>
+
+</html>
