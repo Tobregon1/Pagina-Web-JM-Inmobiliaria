@@ -86,6 +86,35 @@
             opacity: 0.7;
             pointer-events: none;
         }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 
@@ -106,64 +135,118 @@
                 <h1 class="section-title">Panel de Administración</h1>
             </div>
 
-            <div class="admin-form">
-                <h2>Agregar Nueva Propiedad</h2>
-                <form id="addPropertyForm">
-                    <div class="form-group">
-                        <label for="title">Título</label>
-                        <input type="text" id="title" required placeholder="Ej: Casa Moderna en Centro">
-                    </div>
+            <!-- Tabs -->
+            <div style="display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #e0e0e0;">
+                <button class="tab-btn active" data-tab="properties">Propiedades</button>
+                <button class="tab-btn" data-tab="agents">Agentes</button>
+            </div>
 
-                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div>
-                            <label for="price">Precio (USD/ARS)</label>
-                            <input type="number" id="price" required placeholder="Ej: 150000">
+            <!-- Properties Tab -->
+            <div class="tab-content active" id="properties-tab">
+                <div class="admin-form">
+                    <h2>Agregar Nueva Propiedad</h2>
+                    <form id="addPropertyForm">
+                        <div class="form-group">
+                            <label for="title">Título</label>
+                            <input type="text" id="title" required placeholder="Ej: Casa Moderna en Centro">
                         </div>
-                        <div>
-                            <label for="type">Operación</label>
-                            <select id="type" required>
-                                <option value="buy">Venta</option>
-                                <option value="rent">Alquiler</option>
-                            </select>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <label for="price">Precio (USD/ARS)</label>
+                                <input type="number" id="price" required placeholder="Ej: 150000">
+                            </div>
+                            <div>
+                                <label for="type">Operación</label>
+                                <select id="type" required>
+                                    <option value="buy">Venta</option>
+                                    <option value="rent">Alquiler</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="location">Ubicación</label>
-                        <input type="text" id="location" required placeholder="Ej: Palermo, Buenos Aires">
-                    </div>
-
-                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
-                        <div>
-                            <label for="bedrooms">Habitaciones</label>
-                            <input type="number" id="bedrooms" required placeholder="2">
+                        <div class="form-group">
+                            <label for="location">Ubicación</label>
+                            <input type="text" id="location" required placeholder="Ej: Palermo, Buenos Aires">
                         </div>
-                        <div>
-                            <label for="bathrooms">Baños</label>
-                            <input type="number" id="bathrooms" required placeholder="1">
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                            <div>
+                                <label for="bedrooms">Habitaciones</label>
+                                <input type="number" id="bedrooms" required placeholder="2">
+                            </div>
+                            <div>
+                                <label for="bathrooms">Baños</label>
+                                <input type="number" id="bathrooms" required placeholder="1">
+                            </div>
+                            <div>
+                                <label for="size">Metros Cuadrados</label>
+                                <input type="number" id="size" required placeholder="85">
+                            </div>
                         </div>
-                        <div>
-                            <label for="size">Metros Cuadrados</label>
-                            <input type="number" id="size" required placeholder="85">
+
+                        <div class="form-group">
+                            <label for="description">Descripción</label>
+                            <textarea id="description" rows="4" required
+                                placeholder="Descripción detallada de la propiedad..."></textarea>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="description">Descripción</label>
-                        <textarea id="description" rows="4" required
-                            placeholder="Descripción detallada de la propiedad..."></textarea>
-                    </div>
+                        <div class="form-group">
+                            <label for="image">Imagen Principal</label>
+                            <input type="file" id="image" accept="image/*" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="image">Imagen Principal</label>
-                        <input type="file" id="image" accept="image/*" required>
-                    </div>
+                        <button type="submit" class="cta-button"
+                            style="width: 100%; border: none; cursor: pointer;">Publicar Propiedad</button>
 
-                    <button type="submit" class="cta-button"
-                        style="width: 100%; border: none; cursor: pointer;">Publicar Propiedad</button>
+                        <div id="message"></div>
+                    </form>
+                </div>
+            </div>
 
-                    <div id="message"></div>
-                </form>
+            <!-- Agents Tab -->
+            <div class="tab-content" id="agents-tab">
+                <div class="admin-form">
+                    <h2>Agregar Nuevo Agente</h2>
+                    <form id="addAgentForm">
+                        <div class="form-group">
+                            <label for="agent-name">Nombre Completo</label>
+                            <input type="text" id="agent-name" required placeholder="Ej: Juan Pérez">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="agent-role">Cargo/Rol</label>
+                            <input type="text" id="agent-role" required placeholder="Ej: Gerente de Ventas">
+                        </div>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <label for="agent-phone">Teléfono</label>
+                                <input type="tel" id="agent-phone" required placeholder="+54 11 1234-5678">
+                            </div>
+                            <div>
+                                <label for="agent-email">Email</label>
+                                <input type="email" id="agent-email" required placeholder="juan@jminmobiliaria.com">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="agent-description">Descripción</label>
+                            <textarea id="agent-description" rows="4" required
+                                placeholder="Breve descripción del agente, experiencia, especialidades..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="agent-image">Foto del Agente</label>
+                            <input type="file" id="agent-image" accept="image/*" required>
+                        </div>
+
+                        <button type="submit" class="cta-button"
+                            style="width: 100%; border: none; cursor: pointer;">Agregar Agente</button>
+
+                        <div id="agent-message"></div>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
@@ -247,6 +330,84 @@
                 messageDiv.style.display = 'block';
             } finally {
                 submitBtn.textContent = 'Publicar Propiedad';
+                form.classList.remove('loading');
+            }
+        });
+
+        // Tab Switching Logic
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetTab = btn.dataset.tab;
+
+                // Update buttons
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Update content
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(`${targetTab}-tab`).classList.add('active');
+            });
+        });
+
+        // Agent Form Submission
+        document.getElementById('addAgentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const messageDiv = document.getElementById('agent-message');
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // Reset message
+            messageDiv.style.display = 'none';
+            messageDiv.className = '';
+            submitBtn.textContent = 'Agregando...';
+            form.classList.add('loading');
+
+            try {
+                // 1. Upload Image
+                const fileInput = document.getElementById('agent-image');
+                const file = fileInput.files[0];
+                const fileName = `agents/${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
+
+                const { data: uploadData, error: uploadError } = await window.supabaseClient
+                    .storage
+                    .from('images')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                // Get Public URL
+                const { data: { publicUrl } } = window.supabaseClient
+                    .storage
+                    .from('images')
+                    .getPublicUrl(fileName);
+
+                // 2. Insert Data
+                const { error: insertError } = await window.supabaseClient
+                    .from('agents')
+                    .insert([{
+                        name: document.getElementById('agent-name').value,
+                        role: document.getElementById('agent-role').value,
+                        phone: document.getElementById('agent-phone').value,
+                        email: document.getElementById('agent-email').value,
+                        description: document.getElementById('agent-description').value,
+                        image_url: publicUrl
+                    }]);
+
+                if (insertError) throw insertError;
+
+                // Success
+                messageDiv.textContent = '¡Agente agregado con éxito!';
+                messageDiv.classList.add('success');
+                messageDiv.style.display = 'block';
+                form.reset();
+
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'Error: ' + error.message;
+                messageDiv.classList.add('error');
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.textContent = 'Agregar Agente';
                 form.classList.remove('loading');
             }
         });

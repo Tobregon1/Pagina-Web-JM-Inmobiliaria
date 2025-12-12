@@ -128,54 +128,8 @@
     <!-- Agents Grid -->
     <section class="section-padding">
         <div class="container">
-            <div class="agents-grid">
-                <!-- Agent 1 -->
-                <article class="agent-card">
-                    <div class="agent-image">
-                        <i class="fas fa-user-tie fa-5x"></i>
-                    </div>
-                    <div class="agent-info">
-                        <h3 class="agent-name">Juan Pérez</h3>
-                        <p class="agent-role">Gerente de Ventas</p>
-                        <p>Especialista en propiedades residenciales de lujo con más de 10 años de experiencia.</p>
-                        <ul class="agent-contact">
-                            <li><i class="fas fa-phone"></i> +54 11 1234-5678</li>
-                            <li><i class="fas fa-envelope"></i> juan@jminmobiliaria.com</li>
-                        </ul>
-                    </div>
-                </article>
-
-                <!-- Agent 2 -->
-                <article class="agent-card">
-                    <div class="agent-image">
-                        <i class="fas fa-user-tie fa-5x"></i>
-                    </div>
-                    <div class="agent-info">
-                        <h3 class="agent-name">María González</h3>
-                        <p class="agent-role">Agente Inmobiliario</p>
-                        <p>Experta en alquileres y administración de propiedades en CABA.</p>
-                        <ul class="agent-contact">
-                            <li><i class="fas fa-phone"></i> +54 11 8765-4321</li>
-                            <li><i class="fas fa-envelope"></i> maria@jminmobiliaria.com</li>
-                        </ul>
-                    </div>
-                </article>
-
-                <!-- Agent 3 -->
-                <article class="agent-card">
-                    <div class="agent-image">
-                        <i class="fas fa-user-tie fa-5x"></i>
-                    </div>
-                    <div class="agent-info">
-                        <h3 class="agent-name">Carlos Rodríguez</h3>
-                        <p class="agent-role">Asesor Comercial</p>
-                        <p>Enfocado en oportunidades de inversión y desarrollos inmobiliarios.</p>
-                        <ul class="agent-contact">
-                            <li><i class="fas fa-phone"></i> +54 11 1122-3344</li>
-                            <li><i class="fas fa-envelope"></i> carlos@jminmobiliaria.com</li>
-                        </ul>
-                    </div>
-                </article>
+            <div class="agents-grid" id="agents-grid">
+                <!-- Agents will be loaded dynamically -->
             </div>
         </div>
     </section>
@@ -229,6 +183,55 @@
 
     <button id="scrollToTopBtn" title="Ir arriba"><i class="fas fa-chevron-up"></i></button>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        // Fetch and render agents
+        async function loadAgents() {
+            const grid = document.getElementById('agents-grid');
+
+            try {
+                const { data: agents, error } = await window.supabaseClient
+                    .from('agents')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                if (!agents || agents.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No hay agentes disponibles en este momento.</p>';
+                    return;
+                }
+
+                grid.innerHTML = agents.map(agent => `
+                    <article class="agent-card">
+                        <div class="agent-image">
+                            ${agent.image_url ?
+                        `<img src="${agent.image_url}" alt="${agent.name}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                        `<i class="fas fa-user-tie fa-5x"></i>`
+                    }
+                        </div>
+                        <div class="agent-info">
+                            <h3 class="agent-name">${agent.name}</h3>
+                            <p class="agent-role">${agent.role || 'Agente Inmobiliario'}</p>
+                            <p>${agent.description || ''}</p>
+                            <ul class="agent-contact">
+                                ${agent.phone ? `<li><i class="fas fa-phone"></i> ${agent.phone}</li>` : ''}
+                                ${agent.email ? `<li><i class="fas fa-envelope"></i> ${agent.email}</li>` : ''}
+                            </ul>
+                        </div>
+                    </article>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading agents:', error);
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #dc002e;">Error al cargar agentes. Por favor intente más tarde.</p>';
+            }
+        }
+
+        // Load agents on page load
+        loadAgents();
+    </script>
     <script src="js/script.js"></script>
 </body>
 
