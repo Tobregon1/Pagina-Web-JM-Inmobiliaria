@@ -49,7 +49,7 @@
                     <div class="form-group password-group">
                         <label for="password" class="visually-hidden">Contraseña</label>
                         <input type="password" id="password" placeholder="Contraseña*" required>
-                        <i class="far fa-eye toggle-password"> Ver Contraseña| Ocultar Contraseña</i>
+                        <i class="far fa-eye toggle-password" style="cursor: pointer;"></i>
                     </div>
 
                     <div id="error-message"
@@ -154,6 +154,20 @@
             }
         }
         checkSession();
+
+        // Password toggle functionality
+        const togglePassword = document.querySelector('.toggle-password');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            // Toggle the type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Toggle the eye icon
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
     </script>
 </body>
 
