@@ -51,7 +51,7 @@
         <div class="hero-overlay"></div>
         <div class="hero-content container">
             <h1 class="hero-title">Tu Nuevo Hogar te Espera</h1>
-            <p class="hero-subtitle">Miles de propiedades en venta y alquileres</p>
+            <p class="hero-subtitle">Propiedades en Ventas y Alquileres</p>
 
             <div class="search-box">
                 <div class="search-tabs">
@@ -64,11 +64,11 @@
                 <form class="search-form" onsubmit="return false;">
                     <div class="search-input-group">
                         <i class="fas fa-map-marker-alt"></i>
-                        <input type="text" placeholder="Ubicación, barrio o ciudad..." class="search-input">
+                        <input type="text" placeholder="Ubicación, barrio o ciudad..." class="search-input" id="location">
                     </div>
                     <div class="search-input-group">
                         <i class="fas fa-home"></i>
-                        <select class="search-select">
+                        <select class="search-select" id="propertyType">
                             <option value="">Tipo de Propiedad</option>
                             <option value="casa">Casa</option>
                             <option value="departamento">Departamento</option>
@@ -86,7 +86,7 @@
 
     <!-- Valuation CTA Section -->
     <section
-        style="background: linear-gradient(135deg, var(--primary-color), #b8002e); padding: 60px 0; margin: 40px 0;">
+        style="background: linear-gradient(135deg, var(--primary-color), #b8002e); padding: 20px 0; margin: 20px 0;">
         <div class="container" style="text-align: center; color: white;">
             <i class="fas fa-home fa-3x" style="margin-bottom: 20px; opacity: 0.9;"></i>
             <h2 style="font-size: 32px; margin-bottom: 15px; font-weight: 700;">¿Querés vender tu propiedad?</h2>
