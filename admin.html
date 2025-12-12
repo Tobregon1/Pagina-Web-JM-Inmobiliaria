@@ -175,6 +175,17 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="property-type">Tipo de Propiedad</label>
+                            <select id="property-type" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="casa">Casa</option>
+                                <option value="departamento">Departamento</option>
+                                <option value="oficina">Oficina/Local</option>
+                                <option value="terreno">Terreno</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="location">Ubicación</label>
                             <input type="text" id="location" required placeholder="Ej: Palermo, Buenos Aires">
                         </div>
@@ -320,6 +331,7 @@
                         title: document.getElementById('title').value,
                         price: document.getElementById('price').value,
                         type: document.getElementById('type').value,
+                        property_type: document.getElementById('property-type').value,
                         location: document.getElementById('location').value,
                         bedrooms: document.getElementById('bedrooms').value,
                         bathrooms: document.getElementById('bathrooms').value,

@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State ---
     let currentFilter = {
         operation: 'buy', // 'buy', 'rent', or 'favorites'
-        type: '',
+        property_type: '',
         location: ''
     };
 
@@ -142,8 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 filteredProps = properties.filter(prop => {
                     const matchOperation = prop.type === filter.operation;
+                    const matchPropertyType = filter.property_type ? prop.property_type === filter.property_type : true;
                     const matchLocation = filter.location ? prop.location.toLowerCase().includes(filter.location.toLowerCase()) : true;
-                    return matchOperation && matchLocation;
+                    return matchOperation && matchPropertyType && matchLocation;
                 });
             }
 
@@ -420,10 +421,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Search Form
+    // --- Search Form ---
     if (searchForm) {
         searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            const locationValue = searchInput.value.trim();
+            const typeValue = document.getElementById('propertyType').value;
+
             // Si estábamos en favoritos, volvemos a comprar/alquilar con el filtro
             if (currentFilter.operation === 'favorites') {
                 currentFilter.operation = 'buy';
@@ -431,9 +435,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector('[data-type="buy"]').classList.add('active');
             }
 
-            currentFilter.location = searchInput.value;
-            currentFilter.type = searchSelect.value;
+            currentFilter.location = locationValue;
+            currentFilter.property_type = typeValue;
+
             renderProperties(currentFilter);
+
+            // Scroll to properties section
+            document.getElementById('propiedades').scrollIntoView({ behavior: 'smooth' });
         });
 
         searchSelect.addEventListener('change', () => {
