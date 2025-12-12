@@ -76,7 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para formatear precios mejor y regionalmente
     function formatPrice(price, currency, operation) {
-        const isARS = currency === 'ARS';
+        // Default to USD if currency not specified
+        const currencyCode = currency || 'USD';
+        const isARS = currencyCode === 'ARS';
         let formattedPrice = price.toLocaleString('es-AR', {
             style: 'currency',
             currency: isARS ? 'ARS' : 'USD',
@@ -139,10 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 filteredProps = properties.filter(prop => favorites.includes(prop.id));
             } else {
                 filteredProps = properties.filter(prop => {
-                    const matchOperation = prop.operation === filter.operation;
-                    const matchType = filter.type ? prop.type === filter.type : true;
+                    const matchOperation = prop.type === filter.operation;
                     const matchLocation = filter.location ? prop.location.toLowerCase().includes(filter.location.toLowerCase()) : true;
-                    return matchOperation && matchType && matchLocation;
+                    return matchOperation && matchLocation;
                 });
             }
 
@@ -180,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 card.innerHTML = `
                     <div class="property-image">
-                        <div class="property-tag ${prop.operation === 'rent' ? 'rent' : ''}">${prop.operation === 'rent' ? 'Alquiler' : 'Venta'}</div>
+                        <div class="property-tag ${prop.type === 'rent' ? 'rent' : ''}">${prop.type === 'rent' ? 'Alquiler' : 'Venta'}</div>
                         <button class="property-favorite ${isFav ? 'active' : ''}" onclick="window.toggleFavorite(${prop.id}, event)">
                             <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
                         </button>
@@ -191,8 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h3 class="property-title">${prop.title}</h3>
                         <p class="property-location"><i class="fas fa-map-marker-alt"></i> ${prop.location}</p>
                         <div class="property-features">
-                            ${prop.beds > 0 ? `<span><i class="fas fa-bed"></i> ${prop.beds} Dorm</span>` : ''}
-                            ${prop.baths > 0 ? `<span><i class="fas fa-bath"></i> ${prop.baths} Baños</span>` : ''}
+                            ${(prop.bedrooms || prop.beds) > 0 ? `<span><i class="fas fa-bed"></i> ${prop.bedrooms || prop.beds} Dorm</span>` : ''}
+                            ${(prop.bathrooms || prop.baths) > 0 ? `<span><i class="fas fa-bath"></i> ${prop.bathrooms || prop.baths} Baños</span>` : ''}
                             <span><i class="fas fa-ruler-combined"></i> ${prop.size_m2 || prop.size} m²</span>
                         </div>
                     </div>
