@@ -225,6 +225,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modalLocation').textContent = prop.location;
         document.getElementById('modalDescription').textContent = prop.description;
 
+        // Handle Image
+        const placeholder = document.querySelector('.modal-image-placeholder');
+        const imageSrc = prop.image_url || prop.image;
+        if (imageSrc) {
+            placeholder.innerHTML = `<img src="${imageSrc}" alt="${prop.title}" style="width: 100%; height: 100%; object-fit: cover;">`;
+        } else {
+            // Reset to icon if no image
+            placeholder.innerHTML = '<i class="fas fa-image fa-5x"></i>';
+        }
+
         const featuresHtml = `
             ${prop.beds > 0 ? `<span><i class="fas fa-bed"></i> ${prop.beds} Dormitorios</span>` : ''}
             ${prop.baths > 0 ? `<span><i class="fas fa-bath"></i> ${prop.baths} Baños</span>` : ''}
