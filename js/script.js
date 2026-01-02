@@ -225,26 +225,109 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modalLocation').textContent = prop.location;
         document.getElementById('modalDescription').textContent = prop.description;
 
-        // Handle Image
+        // Handle Image / Carousel
         const placeholder = document.querySelector('.modal-image-placeholder');
-        const imageSrc = prop.image_url || prop.image;
-        if (imageSrc) {
-            placeholder.innerHTML = `<img src="${imageSrc}" alt="${prop.title}" style="width: 100%; height: 100%; object-fit: cover;">`;
+        // Clean previous content
+        placeholder.innerHTML = '';
+
+        // Normalize images
+        let images = [];
+        if (prop.images && Array.isArray(prop.images) && prop.images.length > 0) {
+            images = prop.images;
+        } else if (prop.image_url) {
+            images = [prop.image_url];
+        } else if (prop.image) {
+            images = [prop.image];
+        }
+
+        if (images.length > 1) {
+            // Build Carousel
+            let slidesHtml = '';
+            let dotsHtml = '';
+
+            images.forEach((img, index) => {
+                slidesHtml += `
+                    <div class="carousel-slide">
+                        <img src="${img}" alt="${prop.title} - Foto ${index + 1}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                `;
+                dotsHtml += `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`;
+            });
+
+            placeholder.innerHTML = `
+                <div class="carousel-track" style="width: ${images.length * 100}%">
+                    ${slidesHtml}
+                </div>
+                <button class="carousel-btn prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn next"><i class="fas fa-chevron-right"></i></button>
+                <div class="carousel-dots">
+                    ${dotsHtml}
+                </div>
+            `;
+
+            // Initialize Carousel Logic
+            // Small timeout to ensure DOM is ready inside modal
+            setTimeout(() => initCarousel(placeholder, images.length), 0);
+
+        } else if (images.length === 1) {
+            // Single Image
+            placeholder.innerHTML = `<img src="${images[0]}" alt="${prop.title}" style="width: 100%; height: 100%; object-fit: cover;">`;
         } else {
-            // Reset to icon if no image
+            // No Image
             placeholder.innerHTML = '<i class="fas fa-image fa-5x"></i>';
         }
 
         const featuresHtml = `
-            ${prop.beds > 0 ? `<span><i class="fas fa-bed"></i> ${prop.beds} Dormitorios</span>` : ''}
-            ${prop.baths > 0 ? `<span><i class="fas fa-bath"></i> ${prop.baths} Baños</span>` : ''}
-            <span><i class="fas fa-ruler-combined"></i> ${prop.size} m² Totales</span>
+            ${(prop.bedrooms || prop.beds) > 0 ? `<span><i class="fas fa-bed"></i> ${prop.bedrooms || prop.beds} Dormitorios</span>` : ''}
+            ${(prop.bathrooms || prop.baths) > 0 ? `<span><i class="fas fa-bath"></i> ${prop.bathrooms || prop.baths} Baños</span>` : ''}
+            <span><i class="fas fa-ruler-combined"></i> ${prop.size_m2 || prop.size} m² Totales</span>
             <span><i class="fas fa-check-circle"></i> ${prop.type.charAt(0).toUpperCase() + prop.type.slice(1)}</span>
         `;
         document.getElementById('modalFeatures').innerHTML = featuresHtml;
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+    }
+
+    function initCarousel(container, totalSlides) {
+        const track = container.querySelector('.carousel-track');
+        const nextBtn = container.querySelector('.next');
+        const prevBtn = container.querySelector('.prev');
+        const dots = container.querySelectorAll('.carousel-dot');
+
+        let currentSlide = 0;
+
+        function updateSlide() {
+            track.style.transform = `translateX(-${currentSlide * (100 / totalSlides)}%)`;
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentSlide = (currentSlide + 1) % totalSlides;
+                updateSlide();
+            });
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                updateSlide();
+            });
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentSlide = parseInt(dot.getAttribute('data-index'));
+                updateSlide();
+            });
+        });
     }
 
     function closeModalFunc() {
