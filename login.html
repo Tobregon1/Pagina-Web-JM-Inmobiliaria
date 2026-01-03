@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión | JM Inmobiliaria</title>
     <meta name="description" content="Inicia sesión en JM Inmobiliaria para gestionar tus propiedades favoritas.">
+    <link rel="icon" type="image/png" href="assets/images/logoJM(Blanco).png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -40,11 +41,11 @@
     <section class="login-section">
         <div class="container">
             <div class="login-card">
-                <h2 class="login-title">Ingresá tu email</h2>
+                <h2 class="login-title">Ingresá tu usuario</h2>
                 <form class="login-form" id="loginForm">
                     <div class="form-group">
-                        <label for="email" class="visually-hidden">Email</label>
-                        <input type="email" id="email" placeholder="Email*" required>
+                        <label for="username" class="visually-hidden">Usuario</label>
+                        <input type="text" id="username" placeholder="Usuario*" required>
                     </div>
                     <div class="form-group password-group">
                         <label for="password" class="visually-hidden">Contraseña</label>
@@ -94,7 +95,8 @@
             <div class="footer-col">
                 <h4>Contacto</h4>
                 <ul class="contact-info">
-                    <li><i class="fas fa-phone"></i> <a href="https://wa.me/+5493794004024" style="color: #cccccc;">+5493794004024</a></li>
+                    <li><i class="fas fa-phone"></i> <a href="https://wa.me/+5493794004024"
+                            style="color: #cccccc;">+5493794004024</a></li>
                     <li><i class="fas fa-envelope"></i> <a href="mailto:info@jmnegociosinmobiliarios.com"
                             style="color: #cccccc;">info@jmnegociosinmobiliarios.com</a></li>
                     <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/jKDJZ1wTnjcjiMpU7"
@@ -115,10 +117,13 @@
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorMsg = document.getElementById('error-message');
             const button = loginForm.querySelector('button');
+
+            // Construct email from username
+            const email = `${username}@jmnegociosinmobiliarios.com`;
 
             // Reset UI
             errorMsg.style.display = 'none';
@@ -168,6 +173,9 @@
             this.classList.toggle('fa-eye-slash');
         });
     </script>
+    <a href="https://wa.me/+5493794004024" class="whatsapp-float" target="_blank" title="Contactanos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 </body>
 
 </html>

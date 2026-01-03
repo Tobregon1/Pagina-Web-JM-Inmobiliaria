@@ -247,15 +247,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             images.forEach((img, index) => {
                 slidesHtml += `
-                    <div class="carousel-slide">
-                        <img src="${img}" alt="${prop.title} - Foto ${index + 1}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                        <img src="${img}" alt="${prop.title} - Foto ${index + 1}" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
                 `;
                 dotsHtml += `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`;
             });
 
             placeholder.innerHTML = `
-                <div class="carousel-track" style="width: ${images.length * 100}%">
+                <div class="carousel-track">
                     ${slidesHtml}
                 </div>
                 <button class="carousel-btn prev"><i class="fas fa-chevron-left"></i></button>
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } else if (images.length === 1) {
             // Single Image
-            placeholder.innerHTML = `<img src="${images[0]}" alt="${prop.title}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            placeholder.innerHTML = `<img src="${images[0]}" alt="${prop.title}" style="width: 100%; height: 100%; object-fit: contain;">`;
         } else {
             // No Image
             placeholder.innerHTML = '<i class="fas fa-image fa-5x"></i>';
@@ -298,7 +298,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentSlide = 0;
 
         function updateSlide() {
-            track.style.transform = `translateX(-${currentSlide * (100 / totalSlides)}%)`;
+            // track.style.transform = ... (Removed)
+
+            const slides = container.querySelectorAll('.carousel-slide');
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) slide.classList.add('active');
+                else slide.classList.remove('active');
+            });
+
             dots.forEach((dot, index) => {
                 if (index === currentSlide) dot.classList.add('active');
                 else dot.classList.remove('active');
@@ -579,20 +586,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!validateForm(validationInputs, contactForm)) return;
 
-            // Simulate API call
+            // Save to Supabase
             const btn = contactForm.querySelector('.contact-agent-btn');
             const originalText = btn.textContent;
             btn.classList.add('btn-loading');
             btn.disabled = true;
 
-            setTimeout(() => {
-                modalForm.classList.remove('active');
-                formSuccess.style.display = 'block';
-                contactForm.reset();
-                btn.classList.remove('btn-loading');
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }, 1500);
+            // Gather Data
+            const propertyId = modalForm.dataset.propertyId;
+            const propertyTitle = document.getElementById('modalTitle').textContent;
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                message: document.getElementById('message').value,
+                subject: 'Consulta Propiedad: ' + propertyTitle,
+                property_id: propertyId
+            };
+
+            async function submitModalForm() {
+                try {
+                    if (!window.supabaseClient) throw new Error("Supabase offline");
+
+                    // 1. Save to Supabase
+                    const { error } = await window.supabaseClient
+                        .from('contact_messages')
+                        .insert([formData]);
+
+                    if (error) throw error;
+
+                    // 2. Send Email (FormSubmit)
+                    // Use the same target email
+                    await fetch("https://formsubmit.co/ajax/info@jmnegociosinmobiliarios.com", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            _subject: formData.subject,
+                            nombre: formData.name,
+                            email: formData.email,
+                            telefono: formData.phone,
+                            asunto: formData.subject,
+                            mensaje: formData.message,
+                            _template: 'table'
+                        })
+                    }).catch(err => console.error("Error enviando email modal:", err));
+
+                    // SUCCESS
+                    modalForm.classList.remove('active');
+                    formSuccess.style.display = 'block';
+                    contactForm.reset();
+                    btn.classList.remove('btn-loading');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+
+                } catch (err) {
+                    console.error('Error:', err);
+                    alert('Error al enviar. Por favor intente nuevamente.');
+                    btn.classList.remove('btn-loading');
+                    btn.disabled = false;
+                }
+            }
+
+            submitModalForm();
         });
     }
 
