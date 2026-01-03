@@ -27,12 +27,19 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     font-family: var(--font-body);
     /* Usar variable */
     color: var(--text-color);
     line-height: 1.6;
     background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
 }
 
 a {
@@ -854,6 +861,7 @@ img {
     background-color: #1a1a1a;
     color: #ffffff;
     padding-top: 60px;
+    margin-top: auto;
 }
 
 .footer-content {
