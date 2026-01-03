@@ -102,6 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('jm_favorites', JSON.stringify(favorites));
     }
 
+    // Función para normalizar texto (quitar acentos y a minúsculas)
+    function normalizeText(text) {
+        if (!text) return '';
+        return text.toString()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+    }
+
     function toggleFavorite(id, event) {
         event.stopPropagation(); // Prevent modal opening
 
@@ -143,8 +152,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 filteredProps = properties.filter(prop => {
                     const matchOperation = prop.type === filter.operation;
                     const matchPropertyType = filter.property_type ? prop.property_type === filter.property_type : true;
-                    const matchLocation = filter.location ? prop.location.toLowerCase().includes(filter.location.toLowerCase()) : true;
-                    return matchOperation && matchPropertyType && matchLocation;
+
+                    // Búsqueda de ubicación y título más flexible y normalizada
+                    let matchSearch = true;
+                    if (filter.location) {
+                        const searchTerms = normalizeText(filter.location).split(/[,\s]+/).filter(t => t.length > 1);
+                        const propLocation = normalizeText(prop.location);
+                        const propTitle = normalizeText(prop.title);
+
+                        // Coincide si CUALQUIERA de los términos de búsqueda está en la ubicación O en el título
+                        matchSearch = searchTerms.every(term =>
+                            propLocation.includes(term) || propTitle.includes(term)
+                        );
+                    }
+
+                    return matchOperation && matchPropertyType && matchSearch;
                 });
             }
 
@@ -183,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.innerHTML = `
                     <div class="property-image">
                         <div class="property-tag ${prop.type === 'rent' ? 'rent' : ''}">${prop.type === 'rent' ? 'Alquiler' : 'Venta'}</div>
-                        <button class="property-favorite ${isFav ? 'active' : ''}" onclick="window.toggleFavorite(${prop.id}, event)">
+                        <button class="property-favorite ${isFav ? 'active' : ''}" onclick="window.toggleFavorite('${prop.id}', event)">
                             <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
                         </button>
                         ${imageHtml}
@@ -546,7 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         searchSelect.addEventListener('change', () => {
             if (currentFilter.operation === 'favorites') return;
-            currentFilter.type = searchSelect.value;
+            currentFilter.property_type = searchSelect.value;
             renderProperties(currentFilter);
         });
     }
