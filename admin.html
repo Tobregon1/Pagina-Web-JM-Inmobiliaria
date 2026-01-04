@@ -292,9 +292,14 @@
                             <input type="file" id="agent-image" accept="image/*" required>
                         </div>
 
-                        <button type="submit" class="cta-button"
+                        <button type="submit" id="submitAgentBtn" class="cta-button"
                             style="width: 100%; border: none; cursor: pointer; background: linear-gradient(135deg, var(--primary-color), #b8002e); color: white; padding: 15px; font-size: 16px; font-weight: 600; border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(220, 0, 46, 0.3);">
                             Agregar Agente
+                        </button>
+
+                        <button type="button" id="cancelAgentEditBtn" class="logout-btn"
+                            style="width: 100%; margin-top: 10px; display: none; background-color: #666;">
+                            Cancelar Edición
                         </button>
 
                         <div id="agent-message"></div>
@@ -344,6 +349,9 @@
         let isEditing = false;
         let editPropertyId = null;
         let existingImages = [];
+        let isEditingAgent = false;
+        let editAgentId = null;
+        let existingAgentImageUrl = null;
 
         // Image Selection Logic
         document.getElementById('property-images').addEventListener('change', function (e) {
@@ -552,44 +560,64 @@
             form.classList.add('loading');
 
             try {
-                // 1. Upload Image
+                let publicUrl = existingAgentImageUrl;
+
+                // 1. Upload Image (only if a new one is selected)
                 const fileInput = document.getElementById('agent-image');
-                const file = fileInput.files[0];
-                const fileName = `agents/${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const fileName = `agents/${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
 
-                const { data: uploadData, error: uploadError } = await window.supabaseClient
-                    .storage
-                    .from('images')
-                    .upload(fileName, file);
+                    const { data: uploadData, error: uploadError } = await window.supabaseClient
+                        .storage
+                        .from('images')
+                        .upload(fileName, file);
 
-                if (uploadError) throw uploadError;
+                    if (uploadError) throw uploadError;
 
-                // Get Public URL
-                const { data: { publicUrl } } = window.supabaseClient
-                    .storage
-                    .from('images')
-                    .getPublicUrl(fileName);
+                    // Get Public URL
+                    const { data: { publicUrl: newUrl } } = window.supabaseClient
+                        .storage
+                        .from('images')
+                        .getPublicUrl(fileName);
 
-                // 2. Insert Data
-                const { error: insertError } = await window.supabaseClient
-                    .from('agents')
-                    .insert([{
-                        name: document.getElementById('agent-name').value,
-                        role: document.getElementById('agent-role').value,
-                        phone: document.getElementById('agent-phone').value,
-                        email: document.getElementById('agent-email').value,
-                        description: document.getElementById('agent-description').value,
-                        image_url: publicUrl
-                    }]);
+                    publicUrl = newUrl;
+                } else if (!isEditingAgent) {
+                    throw new Error("Debe seleccionar una foto para el agente.");
+                }
 
-                if (insertError) throw insertError;
+                // 2. Prepare Data
+                const agentData = {
+                    name: document.getElementById('agent-name').value,
+                    role: document.getElementById('agent-role').value,
+                    phone: document.getElementById('agent-phone').value,
+                    email: document.getElementById('agent-email').value,
+                    description: document.getElementById('agent-description').value,
+                    image_url: publicUrl
+                };
+
+                let response;
+                if (isEditingAgent) {
+                    response = await window.supabaseClient
+                        .from('agents')
+                        .update(agentData)
+                        .eq('id', editAgentId);
+                } else {
+                    response = await window.supabaseClient
+                        .from('agents')
+                        .insert([agentData]);
+                }
+
+                if (response.error) throw response.error;
 
                 // Success
-                messageDiv.textContent = '¡Agente agregado con éxito!';
+                messageDiv.textContent = isEditingAgent ? '¡Agente actualizado con éxito!' : '¡Agente agregado con éxito!';
                 messageDiv.classList.add('success');
                 messageDiv.style.display = 'block';
-                messageDiv.style.display = 'block';
-                form.reset();
+
+                if (isEditingAgent) cancelEditAgent();
+                else form.reset();
+
                 loadAgents(); // Refresh the list of agents
 
             } catch (error) {
@@ -598,7 +626,7 @@
                 messageDiv.classList.add('error');
                 messageDiv.style.display = 'block';
             } finally {
-                submitBtn.textContent = 'Agregar Agente';
+                submitBtn.textContent = isEditingAgent ? 'Actualizar Agente' : 'Agregar Agente';
                 form.classList.remove('loading');
             }
         });
@@ -629,10 +657,16 @@
                              style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
                         <h3 style="margin: 0 0 5px 0; font-size: 1.1em;">${agent.name}</h3>
                         <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9em;">${agent.role}</p>
-                        <button onclick="deleteAgent('${agent.id}')" 
-                                style="background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.9em; transition: all 0.2s;">
-                            <i class="fas fa-trash-alt"></i> Eliminar
-                        </button>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;">
+                            <button onclick="editAgent('${agent.id}')" 
+                                    style="background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 0.85em; transition: all 0.2s;">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button onclick="deleteAgent('${agent.id}')" 
+                                    style="background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 0.85em; transition: all 0.2s;">
+                                <i class="fas fa-trash-alt"></i> Borrar
+                            </button>
+                        </div>
                     </div>
                 `).join('');
 
@@ -662,6 +696,60 @@
                 alert('Hubo un error al eliminar el agente.');
             }
         }
+
+        async function editAgent(id) {
+            try {
+                const { data: agent, error } = await window.supabaseClient
+                    .from('agents')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+
+                // Populate Form
+                document.getElementById('agent-name').value = agent.name;
+                document.getElementById('agent-role').value = agent.role;
+                document.getElementById('agent-phone').value = agent.phone;
+                document.getElementById('agent-email').value = agent.email;
+                document.getElementById('agent-description').value = agent.description;
+                document.getElementById('agent-image').required = false;
+
+                // State
+                isEditingAgent = true;
+                editAgentId = id;
+                existingAgentImageUrl = agent.image_url;
+
+                // UI
+                document.getElementById('submitAgentBtn').textContent = 'Actualizar Agente';
+                document.getElementById('cancelAgentEditBtn').style.display = 'block';
+                document.querySelector('#agents-tab .admin-form h2').textContent = 'Editando Agente';
+
+                // Scroll to form
+                document.getElementById('addAgentForm').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error("Error fetching agent:", error);
+                alert('Error al cargar datos del agente.');
+            }
+        }
+
+        function cancelEditAgent() {
+            isEditingAgent = false;
+            editAgentId = null;
+            existingAgentImageUrl = null;
+
+            document.getElementById('addAgentForm').reset();
+            document.getElementById('agent-image').required = true;
+            document.getElementById('submitAgentBtn').textContent = 'Agregar Agente';
+            document.getElementById('cancelAgentEditBtn').style.display = 'none';
+            document.querySelector('#agents-tab .admin-form h2').textContent = 'Agregar Nuevo Agente';
+        }
+
+        document.getElementById('cancelAgentEditBtn').addEventListener('click', cancelEditAgent);
+
+        // Expose functions to window
+        window.editAgent = editAgent;
 
         // Hook loadAgents to tab switch
         document.querySelector('button[data-tab="agents"]').addEventListener('click', () => {
