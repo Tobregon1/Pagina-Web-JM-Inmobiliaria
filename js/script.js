@@ -76,26 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para formatear precios mejor y regionalmente
     function formatPrice(price, currency, operation) {
-        // Default to USD if currency not specified
-        const currencyCode = currency || 'USD';
-        const isARS = currencyCode === 'ARS';
-        let formattedPrice = price.toLocaleString('es-AR', {
-            style: 'currency',
-            currency: isARS ? 'ARS' : 'USD',
-            minimumFractionDigits: isARS ? 0 : 2,
-            maximumFractionDigits: isARS ? 0 : 2
-        });
+        // Ensure price is a number
+        const numPrice = Number(price) || 0;
 
-        // Ajuste para mostrar el símbolo de moneda correctamente en el formato
-        if (isARS) {
-            formattedPrice = formattedPrice.replace('ARS', '$');
-        } else {
-            formattedPrice = formattedPrice.replace('USD', 'USD ');
-        }
+        let formattedPrice = numPrice.toLocaleString('es-AR', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
 
         const suffix = operation === 'rent' ? ' / mes' : '';
 
-        return formattedPrice + suffix;
+        return 'USD ' + formattedPrice + suffix;
     }
 
     function saveFavorites() {
