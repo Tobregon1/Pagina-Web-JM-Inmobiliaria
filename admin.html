@@ -966,11 +966,13 @@
                     .eq('id', id);
 
                 if (error) throw error;
+
+                alert('Mensaje eliminado correctamente.');
                 loadMessages();
 
             } catch (error) {
                 console.error("Error deleting message:", error);
-                alert('Hubo un error al eliminar el mensaje.');
+                alert('Hubo un error al eliminar el mensaje. Asegúrate de haber ejecutado el script SQL de permisos.');
             }
         }
 
