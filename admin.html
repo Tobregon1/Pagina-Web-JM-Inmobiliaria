@@ -290,11 +290,8 @@
                         <div class="form-group">
                             <label for="agent-image">Foto del Agente</label>
                             <input type="file" id="agent-image" accept="image/*" required>
-<<<<<<< HEAD
                             <div id="agent-image-preview"
                                 style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;"></div>
-=======
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
                         </div>
 
                         <button type="submit" id="submitAgentBtn" class="cta-button"
@@ -376,7 +373,6 @@
             this.value = '';
         });
 
-<<<<<<< HEAD
         // Agent Image Selection Logic
         document.getElementById('agent-image').addEventListener('change', function (e) {
             const file = e.target.files[0];
@@ -400,13 +396,10 @@
             container.appendChild(wrapper);
         }
 
-=======
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
         function renderImagePreviews() {
             const container = document.getElementById('image-previews');
             container.innerHTML = '';
 
-<<<<<<< HEAD
             // 1. Render Existing Images
             existingImages.forEach((url, index) => {
                 const wrapper = createPreviewWrapper(url, () => {
@@ -423,56 +416,11 @@
                     propertyFiles.splice(index, 1);
                     renderImagePreviews();
                 }, false);
-=======
-            propertyFiles.forEach((file, index) => {
-                const wrapper = document.createElement('div');
-                wrapper.style.position = 'relative';
-                wrapper.style.width = '100px';
-                wrapper.style.height = '100px';
-                wrapper.style.borderRadius = '8px';
-                wrapper.style.overflow = 'hidden';
-                wrapper.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
-
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-
-                const removeBtn = document.createElement('button');
-                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
-                removeBtn.style.position = 'absolute';
-                removeBtn.style.top = '5px';
-                removeBtn.style.right = '5px';
-                removeBtn.style.background = 'rgba(255,0,0,0.8)';
-                removeBtn.style.color = 'white';
-                removeBtn.style.border = 'none';
-                removeBtn.style.borderRadius = '50%';
-                removeBtn.style.width = '20px';
-                removeBtn.style.height = '20px';
-                removeBtn.style.cursor = 'pointer';
-                removeBtn.style.display = 'flex';
-                removeBtn.style.alignItems = 'center';
-                removeBtn.style.justifyContent = 'center';
-                removeBtn.style.fontSize = '12px';
-                removeBtn.onclick = (e) => {
-                    e.preventDefault(); // Prevent form submit
-                    propertyFiles.splice(index, 1);
-                    renderImagePreviews();
-                };
-
-                wrapper.appendChild(img);
-                wrapper.appendChild(removeBtn);
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
                 container.appendChild(wrapper);
             });
 
             // Show badge for primary image
-<<<<<<< HEAD
             if (container.children.length > 0) {
-=======
-            if (propertyFiles.length > 0) {
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
                 const first = container.children[0];
                 const badge = document.createElement('div');
                 badge.innerText = 'Portada';
@@ -485,15 +433,11 @@
                 badge.style.fontSize = '10px';
                 badge.style.textAlign = 'center';
                 badge.style.padding = '2px';
-<<<<<<< HEAD
                 badge.style.zIndex = '2';
-=======
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
                 first.appendChild(badge);
             }
         }
 
-<<<<<<< HEAD
         function createPreviewWrapper(src, onRemove, isExisting) {
             const wrapper = document.createElement('div');
             wrapper.style.position = 'relative';
@@ -537,8 +481,6 @@
             return wrapper;
         }
 
-=======
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
         // Form Submission
         document.getElementById('addPropertyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -593,7 +535,6 @@
                 };
 
                 // Handle images
-<<<<<<< HEAD
                 const finalImages = [...existingImages, ...uploadedUrls];
                 if (finalImages.length > 0) {
                     propertyData.image_url = finalImages[0];
@@ -601,11 +542,6 @@
                 } else {
                     propertyData.image_url = null;
                     propertyData.images = [];
-=======
-                if (uploadedUrls.length > 0) {
-                    propertyData.image_url = uploadedUrls[0];
-                    propertyData.images = isEditing ? [...existingImages, ...uploadedUrls] : uploadedUrls;
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
                 }
 
                 let response;
@@ -729,17 +665,12 @@
                 messageDiv.classList.add('success');
                 messageDiv.style.display = 'block';
 
-<<<<<<< HEAD
                 if (isEditingAgent) {
                     cancelEditAgent();
                 } else {
                     form.reset();
                     document.getElementById('agent-image-preview').innerHTML = '';
                 }
-=======
-                if (isEditingAgent) cancelEditAgent();
-                else form.reset();
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
 
                 loadAgents(); // Refresh the list of agents
 
@@ -848,14 +779,11 @@
                 document.getElementById('cancelAgentEditBtn').style.display = 'block';
                 document.querySelector('#agents-tab .admin-form h2').textContent = 'Editando Agente';
 
-<<<<<<< HEAD
                 // Show Preview
                 if (agent.image_url) {
                     renderAgentPreview(agent.image_url, true);
                 }
 
-=======
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
                 // Scroll to form
                 document.getElementById('addAgentForm').scrollIntoView({ behavior: 'smooth' });
 
@@ -875,10 +803,7 @@
             document.getElementById('submitAgentBtn').textContent = 'Agregar Agente';
             document.getElementById('cancelAgentEditBtn').style.display = 'none';
             document.querySelector('#agents-tab .admin-form h2').textContent = 'Agregar Nuevo Agente';
-<<<<<<< HEAD
             document.getElementById('agent-image-preview').innerHTML = '';
-=======
->>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
         }
 
         document.getElementById('cancelAgentEditBtn').addEventListener('click', cancelEditAgent);
