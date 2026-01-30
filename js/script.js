@@ -261,7 +261,11 @@ document.addEventListener('DOMContentLoaded', () => {
             images.forEach((img, index) => {
                 slidesHtml += `
                     <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+<<<<<<< HEAD
                         <img src="${img}" alt="${prop.title} - Foto ${index + 1}" style="width: 100%; height: 100%;">
+=======
+                        <img src="${img}" alt="${prop.title} - Foto ${index + 1}" style="width: 100%; height: 100%; object-fit: contain;">
+>>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
                     </div>
                 `;
                 dotsHtml += `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`;
@@ -284,7 +288,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } else if (images.length === 1) {
             // Single Image
+<<<<<<< HEAD
             placeholder.innerHTML = `<img src="${images[0]}" alt="${prop.title}" style="width: 100%; height: 100%;">`;
+=======
+            placeholder.innerHTML = `<img src="${images[0]}" alt="${prop.title}" style="width: 100%; height: 100%; object-fit: contain;">`;
+>>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
         } else {
             // No Image
             placeholder.innerHTML = '<i class="fas fa-image fa-5x"></i>';

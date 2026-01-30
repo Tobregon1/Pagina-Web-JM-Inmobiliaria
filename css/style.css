@@ -694,9 +694,13 @@ img {
 }
 
 .modal-image-placeholder {
+<<<<<<< HEAD
     aspect-ratio: 1080 / 1350;
     max-height: 80vh;
     margin: 0 auto;
+=======
+    height: 300px;
+>>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     display: flex;
     align-items: center;
@@ -712,9 +716,12 @@ img {
     position: relative;
     width: 100%;
     height: 100%;
+<<<<<<< HEAD
     display: flex;
     justify-content: center;
     align-items: center;
+=======
+>>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
 }
 
 .carousel-slide {
@@ -740,7 +747,11 @@ img {
 .carousel-slide img {
     width: 100%;
     height: 100%;
+<<<<<<< HEAD
     object-fit: cover;
+=======
+    object-fit: contain;
+>>>>>>> 831e9afe67ddc821a9e5ed3cc50699b48d2bae0d
 }
 
 .carousel-btn {
