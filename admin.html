@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | JM Inmobiliaria</title>
+    <link rel="icon" type="image/png" href="assets/images/logoJM(Blanco).png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .admin-section {
+            padding: 50px 0;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .logout-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            text-align: center;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 0, 46, 0.4) !important;
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logoJM.png" alt="JM Inmobiliaria Logo">
+            </a>
+            <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <section class="admin-section">
+        <div class="container">
+            <div class="admin-header">
+                <h1 class="section-title">Panel de Administración</h1>
+            </div>
+
+            <!-- Tabs -->
+            <div style="display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #e0e0e0;">
+                <button class="tab-btn active" data-tab="properties">Propiedades</button>
+                <button class="tab-btn" data-tab="agents">Agentes</button>
+                <button class="tab-btn" data-tab="messages">Mensajes</button>
+            </div>
+
+            <!-- Properties Tab -->
+            <div class="tab-content active" id="properties-tab">
+                <div class="admin-form">
+                    <h2>Agregar Nueva Propiedad</h2>
+                    <form id="addPropertyForm">
+                        <div class="form-group">
+                            <label for="title">Título</label>
+                            <input type="text" id="title" required placeholder="Ej: Casa Moderna en Centro">
+                        </div>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <label for="price">Precio (USD)</label>
+                                <input type="number" id="price" required placeholder="Ej: 150000">
+                            </div>
+                            <div>
+                                <label for="type">Operación</label>
+                                <select id="type" required>
+                                    <option value="buy">Venta</option>
+                                    <option value="rent">Alquiler</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="property-type">Tipo de Propiedad</label>
+                            <select id="property-type" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="casa">Casa</option>
+                                <option value="departamento">Departamento</option>
+                                <option value="oficina">Oficina/Local</option>
+                                <option value="terreno">Terreno</option>
+                                <option value="galpon">Galpon</option>
+                                <option value="garage">Garage</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location"><i class="fas fa-map-marker-alt"></i> Ubicación
+                                (Ciudad/Barrio)</label>
+                            <input type="text" id="location" placeholder="Ej: Corrientes, Capital" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address"><i class="fas fa-home"></i> Dirección Exacta</label>
+                            <input type="text" id="address" placeholder="Ej: Av. Raúl Alfonsín 1234">
+                        </div>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                            <div>
+                                <label for="bedrooms">Habitaciones</label>
+                                <input type="number" id="bedrooms" required placeholder="Ej: 2">
+                            </div>
+                            <div>
+                                <label for="bathrooms">Baños</label>
+                                <input type="number" id="bathrooms" required placeholder="Ej: 1">
+                            </div>
+                            <div>
+                                <label for="size">Metros Cuadrados</label>
+                                <input type="number" id="size" required placeholder="Ej: 85">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Descripción</label>
+                            <textarea id="description" rows="4" required
+                                placeholder="Descripción detallada de la propiedad..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="property-images">Imágenes de la Propiedad</label>
+                            <input type="file" id="property-images" accept="image/*" multiple>
+                            <small style="color: #666; display: block; margin-top: 5px;">
+                                <i class="fas fa-plus-circle"></i> Puedes agregar imágenes de a una o varias a la vez.
+                                Se irán acumulando abajo.
+                            </small>
+                            <div id="image-previews"
+                                style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;"></div>
+                        </div>
+
+                        <button type="submit" id="submitPropertyBtn" class="cta-button"
+                            style="width: 100%; border: none; cursor: pointer; background: linear-gradient(135deg, var(--primary-color), #b8002e); color: white; padding: 15px; font-size: 16px; font-weight: 600; border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(220, 0, 46, 0.3);">
+                            Publicar Propiedad
+                        </button>
+
+                        <button type="button" id="cancelEditBtn" class="logout-btn"
+                            style="width: 100%; margin-top: 10px; display: none; background-color: #666;">
+                            Cancelar Edición
+                        </button>
+
+                        <div id="message"></div>
+                    </form>
+                </div>
+                <div class="admin-form" style="margin-top: 30px;">
+                    <h2>Propiedades Publicadas</h2>
+                    <div id="properties-list"
+                        style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+                        <!-- Properties will be loaded here -->
+                        <p style="text-align: center; color: #666; grid-column: 1/-1;">Cargando propiedades...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agents Tab -->
+            <div class="tab-content" id="agents-tab">
+                <div class="admin-form">
+                    <h2>Agregar Nuevo Agente</h2>
+                    <form id="addAgentForm">
+                        <div class="form-group">
+                            <label for="agent-name">Nombre Completo</label>
+                            <input type="text" id="agent-name" required placeholder="Ej: Juan Pérez">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="agent-role">Cargo/Rol</label>
+                            <input type="text" id="agent-role" required placeholder="Ej: Gerente de Ventas">
+                        </div>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <label for="agent-phone">Teléfono</label>
+                                <input type="tel" id="agent-phone" required placeholder="+54 11 1234-5678">
+                            </div>
+                            <div>
+                                <label for="agent-email">Email</label>
+                                <input type="email" id="agent-email" required placeholder="juan@jminmobiliaria.com">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="agent-description">Descripción</label>
+                            <textarea id="agent-description" rows="4" required
+                                placeholder="Breve descripción del agente, experiencia, especialidades..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="agent-image">Foto del Agente</label>
+                            <input type="file" id="agent-image" accept="image/*" required>
+                            <div id="agent-image-preview"
+                                style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;"></div>
+                        </div>
+
+                        <button type="submit" id="submitAgentBtn" class="cta-button"
+                            style="width: 100%; border: none; cursor: pointer; background: linear-gradient(135deg, var(--primary-color), #b8002e); color: white; padding: 15px; font-size: 16px; font-weight: 600; border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(220, 0, 46, 0.3);">
+                            Agregar Agente
+                        </button>
+
+                        <button type="button" id="cancelAgentEditBtn" class="logout-btn"
+                            style="width: 100%; margin-top: 10px; display: none; background-color: #666;">
+                            Cancelar Edición
+                        </button>
+
+                        <div id="agent-message"></div>
+                    </form>
+                </div>
+                <div class="admin-form" style="margin-top: 30px;">
+                    <h2>Agentes Existentes</h2>
+                    <div id="agents-list"
+                        style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+                        <!-- Agents will be loaded here -->
+                        <p style="text-align: center; color: #666; grid-column: 1/-1;">Cargando agentes...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Tab -->
+            <div class="tab-content" id="messages-tab">
+                <div class="admin-form" style="max-width: 1000px;">
+                    <h2>Mensajes Recibidos</h2>
+                    <div id="messages-list" style="margin-top: 20px;">
+                        <p style="text-align: center; color: #666;">Cargando mensajes...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/supabase.js"></script>
+    <script>
+        // Check Auth
+        async function checkAuth() {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+            }
+        }
+        checkAuth();
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await window.supabaseClient.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        // Global array to store property images
+        let propertyFiles = [];
+        let isEditing = false;
+        let editPropertyId = null;
+        let existingImages = [];
+        let isEditingAgent = false;
+        let editAgentId = null;
+        let existingAgentImageUrl = null;
+
+        // Image Selection Logic
+        document.getElementById('property-images').addEventListener('change', function (e) {
+            const newFiles = Array.from(e.target.files);
+
+            newFiles.forEach(file => {
+                // Determine unique ID for duplication check (simple name+size check)
+                const fileId = `${file.name}-${file.size}`;
+                if (!propertyFiles.some(f => `${f.name}-${f.size}` === fileId)) {
+                    propertyFiles.push(file);
+                }
+            });
+
+            renderImagePreviews();
+
+            // Clear input to allow re-selecting the same file if needed (e.g. after accidental delete)
+            this.value = '';
+        });
+
+        // Agent Image Selection Logic
+        document.getElementById('agent-image').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            renderAgentPreview(URL.createObjectURL(file), false);
+        });
+
+        function renderAgentPreview(src, isExisting) {
+            const container = document.getElementById('agent-image-preview');
+            container.innerHTML = '';
+
+            const wrapper = createPreviewWrapper(src, () => {
+                container.innerHTML = '';
+                document.getElementById('agent-image').value = '';
+                if (isExisting) {
+                    existingAgentImageUrl = null;
+                }
+            }, isExisting);
+
+            container.appendChild(wrapper);
+        }
+
+        function renderImagePreviews() {
+            const container = document.getElementById('image-previews');
+            container.innerHTML = '';
+
+            // 1. Render Existing Images
+            existingImages.forEach((url, index) => {
+                const wrapper = createPreviewWrapper(url, () => {
+                    existingImages.splice(index, 1);
+                    renderImagePreviews();
+                }, true);
+                container.appendChild(wrapper);
+            });
+
+            // 2. Render New Files
+            propertyFiles.forEach((file, index) => {
+                const url = URL.createObjectURL(file);
+                const wrapper = createPreviewWrapper(url, () => {
+                    propertyFiles.splice(index, 1);
+                    renderImagePreviews();
+                }, false);
+                container.appendChild(wrapper);
+            });
+
+            // Show badge for primary image
+            if (container.children.length > 0) {
+                const first = container.children[0];
+                const badge = document.createElement('div');
+                badge.innerText = 'Portada';
+                badge.style.position = 'absolute';
+                badge.style.bottom = '0';
+                badge.style.left = '0';
+                badge.style.right = '0';
+                badge.style.background = 'rgba(0,0,0,0.6)';
+                badge.style.color = 'white';
+                badge.style.fontSize = '10px';
+                badge.style.textAlign = 'center';
+                badge.style.padding = '2px';
+                badge.style.zIndex = '2';
+                first.appendChild(badge);
+            }
+        }
+
+        function createPreviewWrapper(src, onRemove, isExisting) {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            wrapper.style.width = '100px';
+            wrapper.style.height = '100px';
+            wrapper.style.borderRadius = '8px';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+            if (isExisting) wrapper.style.border = '2px solid var(--primary-color)';
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            removeBtn.style.position = 'absolute';
+            removeBtn.style.top = '5px';
+            removeBtn.style.right = '5px';
+            removeBtn.style.background = 'rgba(255,0,0,0.8)';
+            removeBtn.style.color = 'white';
+            removeBtn.style.border = 'none';
+            removeBtn.style.borderRadius = '50%';
+            removeBtn.style.width = '20px';
+            removeBtn.style.height = '20px';
+            removeBtn.style.cursor = 'pointer';
+            removeBtn.style.display = 'flex';
+            removeBtn.style.alignItems = 'center';
+            removeBtn.style.justifyContent = 'center';
+            removeBtn.style.fontSize = '12px';
+            removeBtn.style.zIndex = '3';
+            removeBtn.onclick = (e) => {
+                e.preventDefault();
+                onRemove();
+            };
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(removeBtn);
+            return wrapper;
+        }
+
+        // Form Submission
+        document.getElementById('addPropertyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const messageDiv = document.getElementById('message');
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // Reset message
+            messageDiv.style.display = 'none';
+            messageDiv.className = '';
+            submitBtn.textContent = 'Subiendo imágenes y publicando...';
+            form.classList.add('loading');
+
+            try {
+                // Validation
+                if (!isEditing && propertyFiles.length === 0) throw new Error("Debe seleccionar al menos una imagen.");
+
+                // 1. Upload Images
+                const uploadedUrls = [];
+
+                for (let i = 0; i < propertyFiles.length; i++) {
+                    const file = propertyFiles[i];
+                    const fileName = `${Date.now()}_${i}_${file.name.replace(/\s+/g, '-')}`;
+
+                    const { data: uploadData, error: uploadError } = await window.supabaseClient
+                        .storage
+                        .from('images')
+                        .upload(fileName, file);
+
+                    if (uploadError) throw uploadError;
+
+                    // Get Public URL
+                    const { data: { publicUrl } } = window.supabaseClient
+                        .storage
+                        .from('images')
+                        .getPublicUrl(fileName);
+
+                    uploadedUrls.push(publicUrl);
+                }
+
+                const propertyData = {
+                    title: document.getElementById('title').value,
+                    price: document.getElementById('price').value,
+                    type: document.getElementById('type').value,
+                    property_type: document.getElementById('property-type').value,
+                    location: document.getElementById('location').value,
+                    address: document.getElementById('address').value,
+                    bedrooms: parseInt(document.getElementById('bedrooms').value),
+                    bathrooms: parseInt(document.getElementById('bathrooms').value),
+                    size_m2: parseInt(document.getElementById('size').value),
+                    description: document.getElementById('description').value
+                };
+
+                // Handle images
+                const finalImages = [...existingImages, ...uploadedUrls];
+                if (finalImages.length > 0) {
+                    propertyData.image_url = finalImages[0];
+                    propertyData.images = finalImages;
+                } else {
+                    propertyData.image_url = null;
+                    propertyData.images = [];
+                }
+
+                let response;
+                if (isEditing) {
+                    response = await window.supabaseClient
+                        .from('properties')
+                        .update(propertyData)
+                        .eq('id', editPropertyId);
+                } else {
+                    response = await window.supabaseClient
+                        .from('properties')
+                        .insert([propertyData]);
+                }
+
+                if (response.error) throw response.error;
+
+                // Success
+                messageDiv.textContent = isEditing ? '¡Propiedad actualizada con éxito!' : '¡Propiedad publicada con éxito!';
+                messageDiv.classList.add('success');
+                messageDiv.style.display = 'block';
+
+                if (isEditing) cancelEdit();
+                else form.reset();
+
+                propertyFiles = []; // Clear files
+                renderImagePreviews();
+                loadProperties(); // Refresh list
+
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'Error: ' + error.message;
+                messageDiv.classList.add('error');
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.textContent = isEditing ? 'Actualizar Propiedad' : 'Publicar Propiedad';
+                form.classList.remove('loading');
+            }
+        });
+
+        // Tab Switching Logic
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetTab = btn.dataset.tab;
+
+                // Update buttons
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Update content
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(`${targetTab}-tab`).classList.add('active');
+            });
+        });
+
+        // Agent Form Submission
+        document.getElementById('addAgentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const messageDiv = document.getElementById('agent-message');
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // Reset message
+            messageDiv.style.display = 'none';
+            messageDiv.className = '';
+            submitBtn.textContent = 'Agregando...';
+            form.classList.add('loading');
+
+            try {
+                let publicUrl = existingAgentImageUrl;
+
+                // 1. Upload Image (only if a new one is selected)
+                const fileInput = document.getElementById('agent-image');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const fileName = `agents/${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
+
+                    const { data: uploadData, error: uploadError } = await window.supabaseClient
+                        .storage
+                        .from('images')
+                        .upload(fileName, file);
+
+                    if (uploadError) throw uploadError;
+
+                    // Get Public URL
+                    const { data: { publicUrl: newUrl } } = window.supabaseClient
+                        .storage
+                        .from('images')
+                        .getPublicUrl(fileName);
+
+                    publicUrl = newUrl;
+                } else if (!isEditingAgent) {
+                    throw new Error("Debe seleccionar una foto para el agente.");
+                }
+
+                // 2. Prepare Data
+                const agentData = {
+                    name: document.getElementById('agent-name').value,
+                    role: document.getElementById('agent-role').value,
+                    phone: document.getElementById('agent-phone').value,
+                    email: document.getElementById('agent-email').value,
+                    description: document.getElementById('agent-description').value,
+                    image_url: publicUrl
+                };
+
+                let response;
+                if (isEditingAgent) {
+                    response = await window.supabaseClient
+                        .from('agents')
+                        .update(agentData)
+                        .eq('id', editAgentId);
+                } else {
+                    response = await window.supabaseClient
+                        .from('agents')
+                        .insert([agentData]);
+                }
+
+                if (response.error) throw response.error;
+
+                // Success
+                messageDiv.textContent = isEditingAgent ? '¡Agente actualizado con éxito!' : '¡Agente agregado con éxito!';
+                messageDiv.classList.add('success');
+                messageDiv.style.display = 'block';
+
+                if (isEditingAgent) {
+                    cancelEditAgent();
+                } else {
+                    form.reset();
+                    document.getElementById('agent-image-preview').innerHTML = '';
+                }
+
+                loadAgents(); // Refresh the list of agents
+
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'Error: ' + error.message;
+                messageDiv.classList.add('error');
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.textContent = isEditingAgent ? 'Actualizar Agente' : 'Agregar Agente';
+                form.classList.remove('loading');
+            }
+        });
+
+        // -------------------------------------------------------------
+        // Agent Management Logic (List & Delete)
+        // -------------------------------------------------------------
+
+        async function loadAgents() {
+            const listContainer = document.getElementById('agents-list');
+
+            try {
+                const { data: agents, error } = await window.supabaseClient
+                    .from('agents')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!agents || agents.length === 0) {
+                    listContainer.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">No hay agentes registrados.</p>';
+                    return;
+                }
+
+                listContainer.innerHTML = agents.map(agent => `
+                    <div style="border: 1px solid #eee; border-radius: 8px; padding: 15px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; text-align: center;">
+                        <img src="${agent.image_url || 'assets/images/placeholder-user.png'}" alt="${agent.name}" 
+                             style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
+                        <h3 style="margin: 0 0 5px 0; font-size: 1.1em;">${agent.name}</h3>
+                        <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9em;">${agent.role}</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;">
+                            <button onclick="editAgent('${agent.id}')" 
+                                    style="background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 0.85em; transition: all 0.2s;">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button onclick="deleteAgent('${agent.id}')" 
+                                    style="background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 0.85em; transition: all 0.2s;">
+                                <i class="fas fa-trash-alt"></i> Borrar
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error("Error loading agents:", error);
+                listContainer.innerHTML = '<p style="color: red; text-align: center;">Error al cargar agentes.</p>';
+            }
+        }
+
+        async function deleteAgent(id) {
+            if (!confirm('¿Estás seguro de que deseas eliminar este agente? Esta acción no se puede deshacer.')) return;
+
+            try {
+                // Delete from DB
+                const { error } = await window.supabaseClient
+                    .from('agents')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                alert('Agente eliminado correctamente.');
+                loadAgents(); // Refresh list
+
+            } catch (error) {
+                console.error("Error deleting agent:", error);
+                alert('Hubo un error al eliminar el agente.');
+            }
+        }
+
+        async function editAgent(id) {
+            try {
+                const { data: agent, error } = await window.supabaseClient
+                    .from('agents')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+
+                // Populate Form
+                document.getElementById('agent-name').value = agent.name;
+                document.getElementById('agent-role').value = agent.role;
+                document.getElementById('agent-phone').value = agent.phone;
+                document.getElementById('agent-email').value = agent.email;
+                document.getElementById('agent-description').value = agent.description;
+                document.getElementById('agent-image').required = false;
+
+                // State
+                isEditingAgent = true;
+                editAgentId = id;
+                existingAgentImageUrl = agent.image_url;
+
+                // UI
+                document.getElementById('submitAgentBtn').textContent = 'Actualizar Agente';
+                document.getElementById('cancelAgentEditBtn').style.display = 'block';
+                document.querySelector('#agents-tab .admin-form h2').textContent = 'Editando Agente';
+
+                // Show Preview
+                if (agent.image_url) {
+                    renderAgentPreview(agent.image_url, true);
+                }
+
+                // Scroll to form
+                document.getElementById('addAgentForm').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error("Error fetching agent:", error);
+                alert('Error al cargar datos del agente.');
+            }
+        }
+
+        function cancelEditAgent() {
+            isEditingAgent = false;
+            editAgentId = null;
+            existingAgentImageUrl = null;
+
+            document.getElementById('addAgentForm').reset();
+            document.getElementById('agent-image').required = true;
+            document.getElementById('submitAgentBtn').textContent = 'Agregar Agente';
+            document.getElementById('cancelAgentEditBtn').style.display = 'none';
+            document.querySelector('#agents-tab .admin-form h2').textContent = 'Agregar Nuevo Agente';
+            document.getElementById('agent-image-preview').innerHTML = '';
+        }
+
+        document.getElementById('cancelAgentEditBtn').addEventListener('click', cancelEditAgent);
+
+        // Expose functions to window
+        window.editAgent = editAgent;
+
+        // Hook loadAgents to tab switch
+        document.querySelector('button[data-tab="agents"]').addEventListener('click', () => {
+            loadAgents();
+        });
+
+        // Also load if refresh on this tab (simple check) or just calling it wouldn't hurt logic-wise but tab logic handles visibility.
+        // Let's modify the add agent form success to reload the list too.
+
+        // Expose deleteAgent to global scope so onclick works
+        window.deleteAgent = deleteAgent;
+
+        // -------------------------------------------------------------
+        // Property Management Logic (List & Delete)
+        // -------------------------------------------------------------
+
+        async function loadProperties() {
+            const listContainer = document.getElementById('properties-list');
+
+            try {
+                const { data: properties, error } = await window.supabaseClient
+                    .from('properties')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!properties || properties.length === 0) {
+                    listContainer.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">No hay propiedades publicadas.</p>';
+                    return;
+                }
+
+                listContainer.innerHTML = properties.map(prop => `
+                    <div style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <div style="height: 150px; overflow: hidden;">
+                            <img src="${prop.image_url || 'assets/images/default-property.jpg'}" alt="${prop.title}" 
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div style="padding: 15px;">
+                            <h3 style="margin: 0 0 5px 0; font-size: 1.1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${prop.title}</h3>
+                            <p style="margin: 0 0 10px 0; color: var(--primary-color); font-weight: 600;">$${prop.price}</p>
+                            <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">
+                                <i class="fas fa-map-marker-alt"></i> ${prop.location}
+                            </p>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <button onclick="editProperty('${prop.id}')" 
+                                        style="background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; padding: 8px; border-radius: 4px; cursor: pointer; font-size: 0.9em; transition: all 0.2s;">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button onclick="deleteProperty('${prop.id}')" 
+                                        style="background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; padding: 8px; border-radius: 4px; cursor: pointer; font-size: 0.9em; transition: all 0.2s;">
+                                    <i class="fas fa-trash-alt"></i> Borrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error("Error loading properties:", error);
+                listContainer.innerHTML = '<p style="color: red; text-align: center;">Error al cargar propiedades.</p>';
+            }
+        }
+
+        async function deleteProperty(id) {
+            if (!confirm('¿Estás seguro de que deseas eliminar esta propiedad? Esta acción no se puede deshacer.')) return;
+
+            try {
+                const { error } = await window.supabaseClient
+                    .from('properties')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                alert('Propiedad eliminada correctamente.');
+                loadProperties();
+
+            } catch (error) {
+                console.error("Error deleting property:", error);
+                alert('Hubo un error al eliminar la propiedad.');
+            }
+        }
+
+        async function editProperty(id) {
+            try {
+                const { data: prop, error } = await window.supabaseClient
+                    .from('properties')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+
+                // Populate Form
+                document.getElementById('title').value = prop.title;
+                document.getElementById('price').value = prop.price;
+                document.getElementById('type').value = prop.type;
+                document.getElementById('property-type').value = prop.property_type;
+                document.getElementById('location').value = prop.location;
+                document.getElementById('address').value = prop.address || '';
+                document.getElementById('bedrooms').value = prop.bedrooms;
+                document.getElementById('bathrooms').value = prop.bathrooms;
+                document.getElementById('size').value = prop.size_m2;
+                document.getElementById('description').value = prop.description;
+
+                // State
+                isEditing = true;
+                editPropertyId = id;
+                existingImages = prop.images || (prop.image_url ? [prop.image_url] : []);
+                propertyFiles = []; // Reset new files
+
+                // UI
+                document.getElementById('submitPropertyBtn').textContent = 'Actualizar Propiedad';
+                document.getElementById('cancelEditBtn').style.display = 'block';
+                document.querySelector('.admin-form h2').textContent = 'Editando Propiedad';
+
+                // Scroll to form
+                document.getElementById('addPropertyForm').scrollIntoView({ behavior: 'smooth' });
+
+                // Optional: Render existing images if you want to allow managing them
+                renderImagePreviews();
+
+            } catch (error) {
+                console.error("Error fetching property:", error);
+                alert('Error al cargar datos de la propiedad.');
+            }
+        }
+
+        function cancelEdit() {
+            isEditing = false;
+            editPropertyId = null;
+            existingImages = [];
+            propertyFiles = [];
+
+            document.getElementById('addPropertyForm').reset();
+            document.getElementById('submitPropertyBtn').textContent = 'Publicar Propiedad';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            document.querySelector('.admin-form h2').textContent = 'Agregar Nueva Propiedad';
+            renderImagePreviews();
+        }
+
+        document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
+
+        // Hook loadProperties to tab switch
+        document.querySelector('button[data-tab="properties"]').addEventListener('click', () => {
+            loadProperties();
+        });
+
+        // Initial load
+        loadProperties();
+        loadAgents();
+        loadMessages();
+
+        window.deleteProperty = deleteProperty;
+        window.deleteMessage = deleteMessage;
+
+        // -------------------------------------------------------------
+        // Messages Management Logic
+        // -------------------------------------------------------------
+        async function loadMessages() {
+            const listContainer = document.getElementById('messages-list');
+
+            try {
+                const { data: messages, error } = await window.supabaseClient
+                    .from('contact_messages')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!messages || messages.length === 0) {
+                    listContainer.innerHTML = '<p style="text-align: center; color: #666;">No hay mensajes recibidos.</p>';
+                    return;
+                }
+
+                listContainer.innerHTML = messages.map(msg => `
+                    <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 20px; position: relative;">
+                        <button onclick="deleteMessage('${msg.id}')" 
+                                style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #dc3545; cursor: pointer; font-size: 1.1em;"
+                                title="Eliminar mensaje">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <div style="display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap;">
+                            <span style="background: var(--primary-color); color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.85em;">
+                                ${new Date(msg.created_at).toLocaleString()}
+                            </span>
+                            <span style="font-weight: 700;">${msg.name}</span>
+                            <span style="color: #666;"><i class="fas fa-envelope"></i> ${msg.email}</span>
+                            ${msg.phone ? `<span style="color: #666;"><i class="fas fa-phone"></i> ${msg.phone}</span>` : ''}
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>Asunto:</strong> ${msg.subject || 'Sin asunto'}
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 5px; border-left: 4px solid var(--secondary-color); white-space: pre-wrap;">
+                            ${msg.message}
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error("Error loading messages:", error);
+                listContainer.innerHTML = '<p style="color: red; text-align: center;">Error al cargar mensajes.</p>';
+            }
+        }
+
+        async function deleteMessage(id) {
+            if (!confirm('¿Estás seguro de que deseas eliminar este mensaje?')) return;
+
+            try {
+                const { error } = await window.supabaseClient
+                    .from('contact_messages')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                alert('Mensaje eliminado correctamente.');
+                loadMessages();
+
+            } catch (error) {
+                console.error("Error deleting message:", error);
+                alert('Hubo un error al eliminar el mensaje. Asegúrate de haber ejecutado el script SQL de permisos.');
+            }
+        }
+
+        // Hook loadMessages to tab switch
+        document.querySelector('button[data-tab="messages"]').addEventListener('click', () => {
+            loadMessages();
+        });
+    </script>
+    <a href="https://wa.me/+5493794004024" class="whatsapp-float" target="_blank" title="Contactanos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</body>
+
+</html>

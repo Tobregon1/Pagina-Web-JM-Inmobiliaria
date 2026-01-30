@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestros Agentes | JM Inmobiliaria</title>
+    <meta name="description" content="Conocé al equipo de profesionales de JM Inmobiliaria.">
+    <link rel="icon" type="image/png" href="assets/images/logoJM(Blanco).png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .agent-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .agent-image {
+            height: 300px;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+
+        .agent-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .agent-info {
+            padding: 20px;
+        }
+
+        .agent-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .agent-role {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .agent-contact {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .agent-contact li {
+            margin-bottom: 8px;
+            color: var(--light-text);
+            font-size: 14px;
+        }
+
+        .agent-contact i {
+            color: var(--secondary-color);
+            width: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logoJM.png" alt="JM Inmobiliaria Logo">
+            </a>
+
+            <button class="mobile-menu-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li class="dropdown">
+                        <a href="index.html" class="nav-link">Inicio <i class="fas fa-chevron-down"
+                                style="font-size: 12px; margin-left: 5px;"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="index.html?type=buy#propiedades" class="dropdown-item">Comprar</a></li>
+                            <li><a href="index.html?type=rent#propiedades" class="dropdown-item">Alquilar</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="agentes.html" class="nav-link active">Agentes</a></li>
+                    <li><a href="sobre-nosotros.html" class="nav-link">Sobre Nosotros</a></li>
+                    <li><a href="contacto.html" class="nav-link contact-btn">Contacto</a></li>
+                    <li><a href="login.html" class="nav-link"><i class="fas fa-user"></i> Iniciar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Title -->
+    <section class="section-padding"
+        style="background-color: var(--primary-color); padding-bottom: 50px; padding-top: 50px;">
+        <div class="container">
+            <h1 class="section-title" style="text-align: center; color: var(--white);">Nuestro Equipo</h1>
+            <p style="text-align: center; max-width: 600px; margin: 0 auto; color: var(--white);">
+                Conocé a los profesionales dedicados para ayudarte a encontrar tu propiedad ideal.
+            </p>
+        </div>
+    </section>
+
+    <!-- Agents Grid -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="agents-grid" id="agents-grid">
+                <!-- Agents will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <img src="assets/images/logoJM(Blanco).png" alt="JM Inmobiliaria" class="logo"
+                    style="background-color: transparent; width: 50px; height: 50px;">
+                <p>Tu socio de confianza en el mercado inmobiliario. Encontramos el lugar perfecto para vos.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61580428476670"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/jm.negocios.inmobiliarios_/"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Propiedades</h4>
+                <ul>
+                    <li><a href="index.html?type=buy#propiedades">Comprar</a></li>
+                    <li><a href="index.html?type=rent#propiedades">Alquilar</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Empresa</h4>
+                <ul>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="agentes.html">Agentes</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul class="contact-info">
+                    <li><i class="fas fa-phone"></i> <a href="https://wa.me/+5493794004024"
+                            style="color: #cccccc;">+5493794004024</a></li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:info@jmnegociosinmobiliarios.com"
+                            style="color: #cccccc;">info@jmnegociosinmobiliarios.com</a></li>
+                    <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/jKDJZ1wTnjcjiMpU7"
+                            style="color: #cccccc;">Av. Raul Alfonsín 4850, Corrientes Capital, Argentina</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2025 JM Inmobiliaria. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/+5493794004024" class="whatsapp-float" target="_blank" title="Contactanos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <button id="scrollToTopBtn" title="Ir arriba"><i class="fas fa-chevron-up"></i></button>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        // Fetch and render agents
+        async function loadAgents() {
+            const grid = document.getElementById('agents-grid');
+
+            try {
+                const { data: agents, error } = await window.supabaseClient
+                    .from('agents')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                if (!agents || agents.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No hay agentes disponibles en este momento.</p>';
+                    return;
+                }
+
+                grid.innerHTML = agents.map(agent => `
+                    <article class="agent-card">
+                        <div class="agent-image">
+                            ${agent.image_url ?
+                        `<img src="${agent.image_url}" alt="${agent.name}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                        `<i class="fas fa-user-tie fa-5x"></i>`
+                    }
+                        </div>
+                        <div class="agent-info">
+                            <h3 class="agent-name">${agent.name}</h3>
+                            <p class="agent-role">${agent.role || 'Agente Inmobiliario'}</p>
+                            <p>${agent.description || ''}</p>
+                            <ul class="agent-contact">
+                                ${agent.phone ? `<li><i class="fas fa-phone"></i> <a href="https://wa.me/${agent.phone.replace(/\D/g, '')}" target="_blank" style="color: inherit; text-decoration: none;">${agent.phone}</a></li>` : ''}
+                                ${agent.email ? `<li><i class="fas fa-envelope"></i> <a href="mailto:${agent.email}" style="color: inherit; text-decoration: none;">${agent.email}</a></li>` : ''}
+                            </ul>
+                        </div>
+                    </article>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading agents:', error);
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #dc002e;">Error al cargar agentes. Por favor intente más tarde.</p>';
+            }
+        }
+
+        // Load agents on page load
+        loadAgents();
+    </script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

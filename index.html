@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JM Inmobiliaria | Encontrá el lugar de tus sueños</title>
+    <meta name="description"
+        content="Encuentra la propiedad de tus sueños con JM Inmobiliaria. Venta y alquiler de casas, departamentos y oficinas.">
+    <link rel="icon" type="image/png" href="assets/images/logoJM(Blanco).png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <img src="assets/images/logoJM.png" alt="JM Inmobiliaria Logo">
+            </a>
+
+            <button class="mobile-menu-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li class="dropdown">
+                        <a href="index.html" class="nav-link active">Inicio <i class="fas fa-chevron-down"
+                                style="font-size: 12px; margin-left: 5px;"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="index.html?type=buy#propiedades" class="dropdown-item">Comprar</a></li>
+                            <li><a href="index.html?type=rent#propiedades" class="dropdown-item">Alquilar</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="agentes.html" class="nav-link">Agentes</a></li>
+                    <li><a href="sobre-nosotros.html" class="nav-link">Sobre Nosotros</a></li>
+                    <li><a href="contacto.html" class="nav-link contact-btn">Contacto</a></li>
+                    <li><a href="login.html" class="nav-link"><i class="fas fa-user"></i> Iniciar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="hero-title">Tu Nuevo Hogar te Espera</h1>
+            <p class="hero-subtitle">Propiedades en Ventas y Alquileres</p>
+
+            <div class="search-box">
+                <div class="search-tabs">
+                    <button class="search-tab active" data-type="buy">Comprar</button>
+                    <button class="search-tab" data-type="rent">Alquilar</button>
+                    <button class="search-tab" id="favoritesBtn"
+                        style="margin-left: auto; color: var(--secondary-color);"><i class="fas fa-heart"></i>
+                        Favoritos</button>
+                </div>
+                <form class="search-form" onsubmit="return false;">
+                    <div class="search-input-group">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" placeholder="Ubicación, barrio o ciudad..." class="search-input"
+                            id="location">
+                    </div>
+                    <div class="search-input-group">
+                        <i class="fas fa-home"></i>
+                        <select class="search-select" id="propertyType">
+                            <option value="">Tipo de Propiedad</option>
+                            <option value="casa">Casa</option>
+                            <option value="departamento">Departamento</option>
+                            <option value="oficina">Oficina</option>
+                            <option value="terreno">Terreno</option>
+                            <option value="garage">Garage</option>
+                            <option value="galpon">Galpon</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Valuation CTA Section -->
+    <section
+        style="background: linear-gradient(135deg, var(--primary-color), #b8002e); padding: 20px 0; margin: 20px 0;">
+        <div class="container" style="text-align: center; color: white;">
+            <i class="fas fa-home fa-3x" style="margin-bottom: 20px; opacity: 0.9;"></i>
+            <h2 style="font-size: 32px; margin-bottom: 15px; font-weight: 700;">¿Querés vender tu propiedad?</h2>
+            <p
+                style="font-size: 18px; margin-bottom: 30px; opacity: 0.95; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Obtené una tasación gratuita y profesional de tu inmueble. Nuestros expertos te asesorarán sin
+                compromiso.
+            </p>
+            <a href="contacto.html" class="cta-button"
+                style="background: white; color: var(--primary-color); padding: 15px 40px; font-size: 18px; font-weight: 600; display: inline-block; text-decoration: none; border-radius: 5px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                Solicitar Tasación Gratuita
+            </a>
+        </div>
+    </section>
+
+    <section id="propiedades" class="featured section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Propiedades Destacadas</h2>
+                <a href="#" class="view-all-link">Ver todas <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="properties-grid">
+            </div>
+        </div>
+    </section>
+
+    <div id="propertyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">×</span>
+            <div class="modal-header">
+                <h2 id="modalTitle">Título de la Propiedad</h2>
+                <span id="modalPrice" class="modal-price">USD 0</span>
+            </div>
+            <div class="modal-body">
+                <div id="modalDetails" class="modal-details-view">
+                    <div class="modal-image-placeholder">
+                        <i class="fas fa-image fa-5x"></i>
+                    </div>
+                    <div class="modal-info">
+                        <p id="modalLocation" class="modal-location"><i class="fas fa-map-marker-alt"></i> Ubicación</p>
+                        <div id="modalFeatures" class="modal-features">
+                        </div>
+                        <p id="modalDescription" class="modal-description">Descripción...</p>
+                        <button id="contactAgentBtn" class="contact-agent-btn">Contactar Agente</button>
+                    </div>
+                </div>
+
+                <div id="modalForm" class="modal-form-container">
+                    <h3>Contactar por esta propiedad</h3>
+                    <p style="margin-bottom: 20px; color: #666;">Dejanos tus datos y un asesor te contactará a la
+                        brevedad.</p>
+
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Nombre Completo</label>
+                            <input type="text" id="name" required>
+                            <div class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" required>
+                            <div class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Teléfono</label>
+                            <input type="tel" id="phone" required>
+                            <div class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensaje</label>
+                            <textarea id="message"
+                                rows="4">Hola, estoy interesado en esta propiedad y me gustaría recibir más información.</textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" id="cancelContactBtn" class="btn-secondary">Volver</button>
+                            <button type="submit" class="contact-agent-btn">Enviar Consulta</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="formSuccess" class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>¡Consulta Enviada!</h3>
+                    <p>Gracias por tu interés. Un agente se pondrá en contacto con vos muy pronto.</p>
+                    <button id="closeSuccessBtn" class="btn-secondary" style="margin-top: 20px;">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="contacto" class="footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <img src="assets/images/logoJM(Blanco).png" alt="JM Inmobiliaria" class="logo"
+                    style="background-color: transparent; width: 50px; height: 50px;">
+                <p>Tu socio de confianza en el mercado inmobiliario. Encontramos el hogar perfecto para vos.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61580428476670"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/jm.negocios.inmobiliarios_/"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Propiedades</h4>
+                <ul>
+                    <li><a href="index.html?type=buy#propiedades">Comprar</a></li>
+                    <li><a href="index.html?type=rent#propiedades">Alquilar</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Empresa</h4>
+                <ul>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="agentes.html">Agentes</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul class="contact-info">
+                    <li><i class="fas fa-phone"></i> <a href="https://wa.me/+5493794004024"
+                            style="color: #cccccc;">+5493794004024</a></li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:info@jmnegociosinmobiliarios.com"
+                            style="color: #cccccc;">info@jmnegociosinmobiliarios.com</a></li>
+                    <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/jKDJZ1wTnjcjiMpU7"
+                            style="color: #cccccc;">Av. Raul Alfonsín 4850, Corrientes Capital, Argentina</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 JM Inmobiliaria. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/+5493794004024" class="whatsapp-float" target="_blank" title="Contactanos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <button id="scrollToTopBtn" title="Ir arriba"><i class="fas fa-chevron-up"></i></button>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
