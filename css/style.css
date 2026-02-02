@@ -1429,3 +1429,40 @@ img {
         font-size: 30px;
     }
 }
+
+/* Status Badge Styles */
+.status-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    border: 5px solid rgba(220, 0, 46, 0.8);
+    color: rgba(220, 0, 46, 0.9);
+    padding: 10px 20px;
+    font-family: var(--font-heading);
+    font-size: 32px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    z-index: 10;
+    pointer-events: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+}
+
+.status-badge.sold {
+    border-color: rgba(220, 0, 46, 0.9);
+    color: rgba(220, 0, 46, 1);
+}
+
+.status-badge.rented {
+    border-color: rgba(0, 61, 165, 0.9); /* Primary color */
+    color: rgba(0, 61, 165, 1);
+}

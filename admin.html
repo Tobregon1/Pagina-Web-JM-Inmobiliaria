@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <style>
         .admin-section {
             padding: 50px 0;
@@ -174,6 +175,15 @@
                                     <option value="rent">Alquiler</option>
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="status">Estado</label>
+                            <select id="status" required>
+                                <option value="available">Disponible</option>
+                                <option value="sold">Vendido</option>
+                                <option value="rented">Alquilado</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
@@ -346,31 +356,31 @@
             window.location.href = 'login.html';
         });
 
-        // Global array to store property images
-        let propertyFiles = [];
+        // Global array to store property images (both existing and new)
+        // Structure: { id: uniqueId, type: 'existing' | 'new', content: url | file }
+        let allImages = [];
         let isEditing = false;
         let editPropertyId = null;
-        let existingImages = [];
         let isEditingAgent = false;
         let editAgentId = null;
         let existingAgentImageUrl = null;
+        let sortableInstance = null;
 
         // Image Selection Logic
         document.getElementById('property-images').addEventListener('change', function (e) {
             const newFiles = Array.from(e.target.files);
 
             newFiles.forEach(file => {
-                // Determine unique ID for duplication check (simple name+size check)
-                const fileId = `${file.name}-${file.size}`;
-                if (!propertyFiles.some(f => `${f.name}-${f.size}` === fileId)) {
-                    propertyFiles.push(file);
-                }
+                const uniqueId = `new-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                allImages.push({
+                    id: uniqueId,
+                    type: 'new',
+                    content: file
+                });
             });
 
             renderImagePreviews();
-
-            // Clear input to allow re-selecting the same file if needed (e.g. after accidental delete)
-            this.value = '';
+            this.value = ''; // Clear input
         });
 
         // Agent Image Selection Logic
@@ -400,42 +410,74 @@
             const container = document.getElementById('image-previews');
             container.innerHTML = '';
 
-            // 1. Render Existing Images
-            existingImages.forEach((url, index) => {
-                const wrapper = createPreviewWrapper(url, () => {
-                    existingImages.splice(index, 1);
-                    renderImagePreviews();
-                }, true);
-                container.appendChild(wrapper);
-            });
+            allImages.forEach((imgObj, index) => {
+                let src;
+                if (imgObj.type === 'existing') {
+                    src = imgObj.content;
+                } else {
+                    src = URL.createObjectURL(imgObj.content);
+                }
 
-            // 2. Render New Files
-            propertyFiles.forEach((file, index) => {
-                const url = URL.createObjectURL(file);
-                const wrapper = createPreviewWrapper(url, () => {
-                    propertyFiles.splice(index, 1);
+                const wrapper = createPreviewWrapper(src, () => {
+                    allImages = allImages.filter(img => img.id !== imgObj.id);
                     renderImagePreviews();
-                }, false);
+                }, imgObj.type === 'existing');
+
+                // Add data-id for SortableJS
+                wrapper.setAttribute('data-id', imgObj.id);
                 container.appendChild(wrapper);
             });
 
             // Show badge for primary image
             if (container.children.length > 0) {
-                const first = container.children[0];
-                const badge = document.createElement('div');
-                badge.innerText = 'Portada';
-                badge.style.position = 'absolute';
-                badge.style.bottom = '0';
-                badge.style.left = '0';
-                badge.style.right = '0';
-                badge.style.background = 'rgba(0,0,0,0.6)';
-                badge.style.color = 'white';
-                badge.style.fontSize = '10px';
-                badge.style.textAlign = 'center';
-                badge.style.padding = '2px';
-                badge.style.zIndex = '2';
-                first.appendChild(badge);
+                updateBadges();
             }
+
+            // Initialize or Refresh Sortable
+            if (!sortableInstance) {
+                sortableInstance = new Sortable(container, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: function (evt) {
+                        // Reorder allImages array based on DOM order
+                        const itemEl = evt.item;
+                        const newIndex = evt.newIndex;
+                        const oldIndex = evt.oldIndex;
+
+                        // Move element in array
+                        const movedItem = allImages.splice(oldIndex, 1)[0];
+                        allImages.splice(newIndex, 0, movedItem);
+
+                        updateBadges();
+                    }
+                });
+            }
+        }
+
+        function updateBadges() {
+            const container = document.getElementById('image-previews');
+            Array.from(container.children).forEach((wrapper, index) => {
+                // Remove existing badges
+                const existingBadge = wrapper.querySelector('.badge-portada');
+                if (existingBadge) existingBadge.remove();
+
+                if (index === 0) {
+                    const badge = document.createElement('div');
+                    badge.className = 'badge-portada';
+                    badge.innerText = 'Portada';
+                    badge.style.position = 'absolute';
+                    badge.style.bottom = '0';
+                    badge.style.left = '0';
+                    badge.style.right = '0';
+                    badge.style.background = 'rgba(0,0,0,0.6)';
+                    badge.style.color = 'white';
+                    badge.style.fontSize = '10px';
+                    badge.style.textAlign = 'center';
+                    badge.style.padding = '2px';
+                    badge.style.zIndex = '2';
+                    wrapper.appendChild(badge);
+                }
+            });
         }
 
         function createPreviewWrapper(src, onRemove, isExisting) {
@@ -446,6 +488,7 @@
             wrapper.style.borderRadius = '8px';
             wrapper.style.overflow = 'hidden';
             wrapper.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+            wrapper.style.cursor = 'grab'; // Indicate draggable
             if (isExisting) wrapper.style.border = '2px solid var(--primary-color)';
 
             const img = document.createElement('img');
@@ -453,6 +496,9 @@
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'cover';
+            // Prevent default drag strictly on image to let wrapper handle it, 
+            // but Sortable usually handles this. Good practice to be safe.
+            img.draggable = false;
 
             const removeBtn = document.createElement('button');
             removeBtn.innerHTML = '<i class="fas fa-times"></i>';
@@ -473,6 +519,7 @@
             removeBtn.style.zIndex = '3';
             removeBtn.onclick = (e) => {
                 e.preventDefault();
+                e.stopPropagation(); // Prevent drag start when clicking delete
                 onRemove();
             };
 
@@ -496,29 +543,36 @@
 
             try {
                 // Validation
-                if (!isEditing && propertyFiles.length === 0) throw new Error("Debe seleccionar al menos una imagen.");
+                if (allImages.length === 0) throw new Error("Debe seleccionar al menos una imagen.");
 
-                // 1. Upload Images
-                const uploadedUrls = [];
+                // 1. Process Images in Order
+                const finalImageUrls = [];
 
-                for (let i = 0; i < propertyFiles.length; i++) {
-                    const file = propertyFiles[i];
-                    const fileName = `${Date.now()}_${i}_${file.name.replace(/\s+/g, '-')}`;
+                for (let i = 0; i < allImages.length; i++) {
+                    const imgObj = allImages[i];
 
-                    const { data: uploadData, error: uploadError } = await window.supabaseClient
-                        .storage
-                        .from('images')
-                        .upload(fileName, file);
+                    if (imgObj.type === 'existing') {
+                        finalImageUrls.push(imgObj.content);
+                    } else {
+                        // Upload new file
+                        const file = imgObj.content;
+                        // Unique name with index to ensure order if somehow parallelized, but we do sequential here
+                        const fileName = `${Date.now()}_${i}_${file.name.replace(/\s+/g, '-')}`;
 
-                    if (uploadError) throw uploadError;
+                        const { data: uploadData, error: uploadError } = await window.supabaseClient
+                            .storage
+                            .from('images')
+                            .upload(fileName, file);
 
-                    // Get Public URL
-                    const { data: { publicUrl } } = window.supabaseClient
-                        .storage
-                        .from('images')
-                        .getPublicUrl(fileName);
+                        if (uploadError) throw uploadError;
 
-                    uploadedUrls.push(publicUrl);
+                        const { data: { publicUrl } } = window.supabaseClient
+                            .storage
+                            .from('images')
+                            .getPublicUrl(fileName);
+
+                        finalImageUrls.push(publicUrl);
+                    }
                 }
 
                 const propertyData = {
@@ -531,18 +585,12 @@
                     bedrooms: parseInt(document.getElementById('bedrooms').value),
                     bathrooms: parseInt(document.getElementById('bathrooms').value),
                     size_m2: parseInt(document.getElementById('size').value),
-                    description: document.getElementById('description').value
+                    size_m2: parseInt(document.getElementById('size').value),
+                    description: document.getElementById('description').value,
+                    status: document.getElementById('status').value, // Add status
+                    image_url: finalImageUrls[0] || null, // Main image
+                    images: finalImageUrls // All images in order
                 };
-
-                // Handle images
-                const finalImages = [...existingImages, ...uploadedUrls];
-                if (finalImages.length > 0) {
-                    propertyData.image_url = finalImages[0];
-                    propertyData.images = finalImages;
-                } else {
-                    propertyData.image_url = null;
-                    propertyData.images = [];
-                }
 
                 let response;
                 if (isEditing) {
@@ -564,10 +612,12 @@
                 messageDiv.style.display = 'block';
 
                 if (isEditing) cancelEdit();
-                else form.reset();
+                else {
+                    form.reset();
+                    allImages = [];
+                    renderImagePreviews();
+                }
 
-                propertyFiles = []; // Clear files
-                renderImagePreviews();
                 loadProperties(); // Refresh list
 
             } catch (error) {
@@ -850,7 +900,12 @@
                         </div>
                         <div style="padding: 15px;">
                             <h3 style="margin: 0 0 5px 0; font-size: 1.1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${prop.title}</h3>
-                            <p style="margin: 0 0 10px 0; color: var(--primary-color); font-weight: 600;">$${prop.price}</p>
+                            <p style="margin: 0 0 10px 0; color: var(--primary-color); font-weight: 600;">
+                                $${prop.price}
+                                <span style="font-size: 0.8em; color: #333; background: #eee; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">
+                                    ${prop.status === 'sold' ? 'VENDIDO' : prop.status === 'rented' ? 'ALQUILADO' : 'DISPONIBLE'}
+                                </span>
+                            </p>
                             <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">
                                 <i class="fas fa-map-marker-alt"></i> ${prop.location}
                             </p>
@@ -915,12 +970,19 @@
                 document.getElementById('bathrooms').value = prop.bathrooms;
                 document.getElementById('size').value = prop.size_m2;
                 document.getElementById('description').value = prop.description;
+                document.getElementById('status').value = prop.status || 'available'; // Populate status
+
 
                 // State
                 isEditing = true;
                 editPropertyId = id;
-                existingImages = prop.images || (prop.image_url ? [prop.image_url] : []);
-                propertyFiles = []; // Reset new files
+                const existingImgs = prop.images || (prop.image_url ? [prop.image_url] : []);
+
+                allImages = existingImgs.map(url => ({
+                    id: `existing-${url}-${Math.random().toString(36).substr(2, 9)}`,
+                    type: 'existing',
+                    content: url
+                }));
 
                 // UI
                 document.getElementById('submitPropertyBtn').textContent = 'Actualizar Propiedad';
@@ -930,7 +992,6 @@
                 // Scroll to form
                 document.getElementById('addPropertyForm').scrollIntoView({ behavior: 'smooth' });
 
-                // Optional: Render existing images if you want to allow managing them
                 renderImagePreviews();
 
             } catch (error) {
@@ -942,8 +1003,7 @@
         function cancelEdit() {
             isEditing = false;
             editPropertyId = null;
-            existingImages = [];
-            propertyFiles = [];
+            allImages = [];
 
             document.getElementById('addPropertyForm').reset();
             document.getElementById('submitPropertyBtn').textContent = 'Publicar Propiedad';
