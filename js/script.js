@@ -200,6 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
                         </button>
                         ${imageHtml}
+                        ${prop.status === 'sold' ? '<div class="status-badge sold">VENDIDO</div>' :
+                        prop.status === 'rented' ? '<div class="status-badge rented">ALQUILADO</div>' : ''}
+
                         <div class="property-price">${priceDisplay}</div>
                     </div>
                     <div class="property-content">
