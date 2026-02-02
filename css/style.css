@@ -830,6 +830,7 @@ img {
     line-height: 1.8;
     color: var(--text-color);
     margin-bottom: 30px;
+    white-space: pre-wrap;
 }
 
 .contact-agent-btn {

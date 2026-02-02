@@ -350,11 +350,30 @@
         }
         checkAuth();
 
-        // Logout
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
+        // Logout Function
+        async function logoutUser() {
             await window.supabaseClient.auth.signOut();
             window.location.href = 'login.html';
-        });
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', logoutUser);
+
+        // Inactivity Timer (5 Minutes)
+        let inactivityTimeout;
+
+        function resetTimer() {
+            clearTimeout(inactivityTimeout);
+            // 5 minutes * 60 seconds * 1000 milliseconds = 300000
+            inactivityTimeout = setTimeout(logoutUser, 300000);
+        }
+
+        // Events that reset the timer
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeypress = resetTimer;
+        document.onclick = resetTimer;
+        document.onscroll = resetTimer;
+        document.ontouchstart = resetTimer;
 
         // Global array to store property images (both existing and new)
         // Structure: { id: uniqueId, type: 'existing' | 'new', content: url | file }
