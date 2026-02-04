@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Data Source (Regionalizado para Corrientes Capital) ---
-    // --- Data Source ---
     let properties = [];
 
     async function fetchProperties() {
@@ -708,7 +707,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial Render ---
     if (propertiesGrid) {
-        // renderProperties(currentFilter); // Removed, fetched by async function
         fetchProperties();
     }
     // --- Scroll to Top Button Logic ---
