@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('propertyModal');
     const closeModal = document.querySelector('.close-modal');
     const favoritesBtn = document.getElementById('favoritesBtn');
+    const sortSelect = document.getElementById('sortProperties');
 
     // Modal Views
     const modalDetails = document.getElementById('modalDetails');
@@ -116,6 +117,43 @@ document.addEventListener('DOMContentLoaded', () => {
         renderProperties(currentFilter);
     }
 
+    // Función para compartir propiedad
+    window.shareProperty = function (id, event) {
+        event.stopPropagation(); // Evitar abrir el modal
+
+        const url = new URL(window.location.href);
+        url.searchParams.set('id', id);
+        // Limpiar otros parámetros para que el enlace sea limpio a la propiedad
+        url.searchParams.delete('type');
+
+        const shareUrl = url.toString();
+
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            showToast('¡Enlace copiado al portapapeles!');
+        }).catch(err => {
+            console.error('Error al copiar: ', err);
+            // Fallback para navegadores antiguos si es necesario
+            showToast('Error al copiar enlace');
+        });
+    };
+
+    function showToast(message) {
+        let toast = document.getElementById('toastNotification');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toastNotification';
+            toast.className = 'toast-notification';
+            document.body.appendChild(toast);
+        }
+
+        toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
     function showLoading() {
         propertiesGrid.innerHTML = `
             <div class="loading-container">
@@ -160,6 +198,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
+            // Logic de Ordenamiento
+            const sortType = sortSelect ? sortSelect.value : 'newest';
+
+            filteredProps.sort((a, b) => {
+                if (sortType === 'price-desc') {
+                    return (Number(b.price) || 0) - (Number(a.price) || 0);
+                } else if (sortType === 'price-asc') {
+                    return (Number(a.price) || 0) - (Number(b.price) || 0);
+                } else if (sortType === 'oldest') {
+                    return new Date(a.created_at) - new Date(b.created_at);
+                } else {
+                    // Newest by default
+                    return new Date(b.created_at) - new Date(a.created_at);
+                }
+            });
+
             if (filteredProps.length === 0) {
                 const msg = filter.operation === 'favorites'
                     ? 'No tenés propiedades favoritas guardadas.'
@@ -195,8 +249,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.innerHTML = `
                     <div class="property-image">
                         <div class="property-tag ${prop.type === 'rent' ? 'rent' : ''}">${prop.type === 'rent' ? 'Alquiler' : 'Venta'}</div>
-                        <button class="property-favorite ${isFav ? 'active' : ''}" onclick="window.toggleFavorite('${prop.id}', event)">
+                        <button class="property-favorite ${isFav ? 'active' : ''}" onclick="window.toggleFavorite('${prop.id}', event)" title="Guardar en favoritos">
                             <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                        </button>
+                        <button class="property-share" onclick="window.shareProperty('${prop.id}', event)" title="Compartir propiedad">
+                            <i class="fas fa-share-alt"></i>
                         </button>
                         ${imageHtml}
                         ${prop.status === 'sold' ? '<div class="status-badge sold">VENDIDO</div>' :
@@ -210,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="property-features">
                             ${(prop.bedrooms || prop.beds) > 0 ? `<span><i class="fas fa-bed"></i> ${prop.bedrooms || prop.beds} Dorm</span>` : ''}
                             ${(prop.bathrooms || prop.baths) > 0 ? `<span><i class="fas fa-bath"></i> ${prop.bathrooms || prop.baths} Baños</span>` : ''}
-                            <span><i class="fas fa-ruler-combined"></i> ${prop.size_m2 || prop.size} m²</span>
+                            ${(prop.size_m2 || prop.size) ? `<span><i class="fas fa-ruler-combined"></i> ${prop.size_m2 || prop.size} m²</span>` : ''}
                         </div>
                     </div>
                 `;
@@ -292,11 +349,25 @@ document.addEventListener('DOMContentLoaded', () => {
             placeholder.innerHTML = '<i class="fas fa-image fa-5x"></i>';
         }
 
+        // Helper para traducir el tipo de operación
+        const typeMap = {
+            'buy': 'Venta',
+            'rent': 'Alquiler',
+            'casa': 'Casa',
+            'departamento': 'Departamento',
+            'oficina': 'Oficina',
+            'terreno': 'Terreno',
+            'local': 'Local'
+        };
+
         const featuresHtml = `
             ${(prop.bedrooms || prop.beds) > 0 ? `<span><i class="fas fa-bed"></i> ${prop.bedrooms || prop.beds} Dormitorios</span>` : ''}
             ${(prop.bathrooms || prop.baths) > 0 ? `<span><i class="fas fa-bath"></i> ${prop.bathrooms || prop.baths} Baños</span>` : ''}
-            <span><i class="fas fa-ruler-combined"></i> ${prop.size_m2 || prop.size} m² Totales</span>
-            <span><i class="fas fa-check-circle"></i> ${prop.type.charAt(0).toUpperCase() + prop.type.slice(1)}</span>
+            ${(prop.size_m2 || prop.size) ? `<span><i class="fas fa-ruler-combined"></i> ${prop.size_m2 || prop.size} m² Totales</span>` : ''}
+            <span><i class="fas fa-check-circle"></i> ${typeMap[prop.type] || prop.type}</span>
+            <button class="modal-share-btn" onclick="window.shareProperty('${prop.id}', event)">
+                <i class="fas fa-share-alt"></i> Compartir
+            </button>
         `;
         document.getElementById('modalFeatures').innerHTML = featuresHtml;
 
@@ -536,6 +607,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // 5. Sort Listener
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            renderProperties(currentFilter);
+        });
+    }
+
     // --- Search Form ---
     if (searchForm) {
         searchForm.addEventListener('submit', (e) => {
@@ -707,7 +785,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial Render ---
     if (propertiesGrid) {
-        fetchProperties();
+        fetchProperties().then(() => {
+            // Check for ID in URL after fetching
+            const idParam = urlParams.get('id');
+            if (idParam) {
+                const propToOpen = properties.find(p => p.id == idParam); // Loose equality for number/string check
+                if (propToOpen) {
+                    openModal(propToOpen);
+                    // Optional: Clean URL after opening (user preference)
+                    // window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+        });
     }
     // --- Scroll to Top Button Logic ---
     const scrollToTopBtn = document.getElementById("scrollToTopBtn");
