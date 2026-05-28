@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | JM Inmobiliaria</title>
+    <meta name="description" content="Inicia sesión en JM Inmobiliaria para gestionar tus propiedades favoritas.">
+    <link rel="icon" type="image/png" href="assets/images/logoJM(Blanco).png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style></style>
+</head>
+
+<body class="login-page">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/Logo JM (negro).png" alt="JM Inmobiliaria Logo">
+            </a>
+
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Volver al Inicio</a></li>
+                    <li><a href="#" class="nav-link contact-btn">Iniciar sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <div class="login-card">
+                <h2 class="login-title">Ingresá tu usuario</h2>
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="username" class="visually-hidden">Usuario</label>
+                        <input type="text" id="username" placeholder="Usuario*" required>
+                    </div>
+                    <div class="form-group password-group">
+                        <label for="password" class="visually-hidden">Contraseña</label>
+                        <input type="password" id="password" placeholder="Contraseña*" required>
+                        <i class="far fa-eye toggle-password" style="cursor: pointer;"></i>
+                    </div>
+
+                    <div id="error-message"
+                        style="display: none; color: #dc002e; padding: 10px; margin-bottom: 10px; background: #ffe6e6; border-radius: 5px; text-align: center;">
+                    </div>
+
+                    <button type="submit" class="login-btn">Continuar</button>
+                    <div class="divider"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/supabase.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-message');
+            const button = loginForm.querySelector('button');
+
+            // Construct email from username
+            const email = `${username}@jmnegociosinmobiliarios.com`;
+
+            // Reset UI
+            errorMsg.style.display = 'none';
+            button.innerText = 'Iniciando sesión...';
+            button.disabled = true;
+
+            try {
+                const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) throw error;
+
+                // Success
+                window.location.href = 'admin.html';
+
+            } catch (error) {
+                console.error("Login Error:", error);
+                errorMsg.innerText = "Credenciales incorrectas. Por favor intente nuevamente.";
+                errorMsg.style.display = 'block';
+                button.innerText = 'Continuar';
+                button.disabled = false;
+            }
+        });
+
+        // Check if already logged in
+        async function checkSession() {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (session) {
+                window.location.href = 'admin.html';
+            }
+        }
+        checkSession();
+
+        // Password toggle functionality
+        const togglePassword = document.querySelector('.toggle-password');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            // Toggle the type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Toggle the eye icon
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+</body>
+
+</html>

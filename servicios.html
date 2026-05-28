@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios | JM Inmobiliaria</title>
+    <meta name="description" content="Conocé más sobre los servicios verdes de JM Inmobiliaria.">
+    <link rel="icon" type="image/png" href="assets/images/logoJM(Blanco).png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/Logo JM (negro).png" alt="JM Inmobiliaria Logo">
+            </a>
+            <button class="mobile-menu-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li class="dropdown">
+                        <a href="index.html" class="nav-link">Inicio <i class="fas fa-chevron-down" 
+                            style="font-size: 12px; margin-left: 5px;"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="index.html?type=buy#propiedades" class="dropdown-item">Comprar</a></li>
+                            <li><a href="index.html?type=rent#propiedades" class="dropdown-item">Alquilar</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="agentes.html" class="nav-link">Agentes</a></li>
+                    <li><a href="sobre-nosotros.html" class="nav-link">Sobre Nosotros</a></li>
+                    <li><a href="servicios.html" class="nav-link active">Servicios</a></li>
+                    <li><a href="contacto.html" class="nav-link contact-btn">Contacto</a></li>
+                    <li><a href="login.html" class="nav-link"><i class="fas fa-user"></i> Iniciar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" style="height: 400px; position: relative; overflow: hidden; text-align: center; color: #fff; background: none;">
+        <!-- El video de fondo está listo. Descomenta la línea <source> y coloca la ruta de tu video. -->
+        <video autoplay loop muted playsinline style="position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -2; transform: translate(-50%, -50%); filter: blur(5px) brightness(0.7);">
+            <source src="assets/images/video1.mp4" type="video/mp4">
+        </video>
+        
+        <!-- Capa de sombra para asegurar la lectura del texto -->
+        <div class="hero-overlay" style="z-index: -1; background: rgba(0, 0, 0, 0.4);"></div>
+
+        <div class="hero-content container" style="position: relative; z-index: 1;">
+            <h1 class="hero-title">Nuestros Servicios</h1>
+            <p class="hero-subtitle">Desmalezadora, mantenimiento de pastos y más</p>
+        </div>
+    </section>
+
+    <style>
+        .services-section {
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            padding: 80px 0 100px 0;
+        }
+        .services-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .services-header .section-title {
+            font-size: 42px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .services-header p {
+            font-size: 18px;
+            color: var(--light-text);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        .service-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 50px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        .service-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .service-card:hover {
+            transform: translateY(-12px);
+        }
+        .service-card:hover::after {
+            opacity: 1;
+        }
+        .icon-wrapper {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, rgba(0, 61, 165, 0.1), rgba(0, 61, 165, 0.05));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            transition: transform 0.4s ease;
+        }
+        .service-card:hover .icon-wrapper {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, var(--primary-color), #002a7a);
+        }
+        .service-card:hover .icon-wrapper i {
+            color: #ffffff !important;
+        }
+        .service-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-family: var(--font-heading);
+        }
+        .service-card p {
+            color: var(--light-text);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+        .cta-container {
+            text-align: center;
+        }
+        .btn-lujo {
+            display: inline-block;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 16px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        .btn-lujo:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.5);
+            color: #fff;
+        }
+        .btn-lujo i {
+            margin-right: 10px;
+        }
+    </style>
+
+    <section class="services-section" id="servicios">
+        <div class="container">
+            <div class="services-header">
+                <h2 class="section-title">Nuestros Servicios Verdes</h2>
+                <p>En JM Inmobiliaria brindamos soluciones premium para el mantenimiento y embellecimiento de tus terrenos y propiedades.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-cut" style="font-size: 36px; color: var(--primary-color); transition: color 0.3s;"></i>
+                    </div>
+                    <h3>Desmalezado Profundo</h3>
+                    <p>Eliminación completa de maleza y arbustos con maquinaria de alta precisión, dejando tu terreno impecable y listo para usar.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-seedling" style="font-size: 36px; color: var(--primary-color); transition: color 0.3s;"></i>
+                    </div>
+                    <h3>Mantenimiento de Pastos</h3>
+                    <p>Un plan integral que incluye corte profesional, fertilización avanzada y control de plagas para un césped verde y vital.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-tools" style="font-size: 36px; color: var(--primary-color); transition: color 0.3s;"></i>
+                    </div>
+                    <h3>Diseño y Nivelación</h3>
+                    <p>Servicios especializados que incluyen nivelado de terreno, siembra de nuevas áreas y asesoramiento paisajístico profesional.</p>
+                </div>
+            </div>
+
+            <div class="cta-container">
+                <a href="https://wa.me/+5493794004024?text=Hola,%20me%20gustar%C3%ADa%20pedir%20un%20presupuesto%20por%20los%20servicios%20de%20limpieza%20de%20terrenos%20y%20mantenimiento%20de%20pastos." class="btn-lujo" target="_blank">
+                    <i class="fab fa-whatsapp" style="font-size: 20px;"></i> Pedí tu Presupuesto
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer" id="contacto">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <img src="assets/images/Logo JM (blanco).png" alt="JM Inmobiliaria" style="background-color: transparent; height: 50px; width: auto; margin-bottom: 20px;">
+                <p>Tu socio de confianza en el mercado inmobiliario. Encontramos el hogar perfecto para vos.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61580428476670"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/jm.negocios.inmobiliarios_/"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Servicios</h4>
+                <ul>
+                    <li><a href="">Desmalezadora</a></li>
+                    <li><a href="">Mantenimiento de pastos</a></li>
+                    <li><a href="">Otros</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Empresa</h4>
+                <ul>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="agentes.html">Agentes</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul class="contact-info">
+                    <li><i class="fas fa-phone"></i> <a href="https://wa.me/+5493794004024" style="color: #cccccc;">+5493794004024</a></li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:info@jmnegociosinmobiliarios.com" style="color: #cccccc;">info@jmnegociosinmobiliarios.com</a></li>
+                    <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/jKDJZ1wTnjcjiMpU7" style="color: #cccccc;">Av. Raul Alfonsín 4850, Corrientes Capital, Argentina</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 JM Inmobiliaria. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/+5493794004024" class="whatsapp-float" target="_blank" title="Contactanos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <button id="scrollToTopBtn" title="Ir arriba"><i class="fas fa-chevron-up"></i></button>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

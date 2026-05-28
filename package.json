@@ -1,0 +1,13 @@
+{
+  "name": "pagina-web-jm-inmobiliaria",
+  "version": "1.0.0",
+  "description": "Static web site for JM Inmobiliaria",
+  "scripts": {
+    "dev": "live-server --open=./"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
