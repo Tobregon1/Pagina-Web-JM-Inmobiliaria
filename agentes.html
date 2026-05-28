@@ -16,8 +16,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .agents-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 30px;
             margin-top: 40px;
         }
@@ -29,6 +30,9 @@
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
             text-align: center;
+            flex: 0 1 350px;
+            max-width: 350px;
+            width: 100%;
         }
 
         .agent-image {
