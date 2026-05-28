@@ -23,6 +23,15 @@
             left: 0;
         }
 
+        /* Forzar color blanco en botón de contacto y ocultar línea inferior para evitar problemas de caché */
+        .nav-link.contact-btn.active {
+            color: #ffffff !important;
+        }
+        
+        .nav-link.contact-btn.active::after {
+            display: none !important;
+        }
+
         body {
             padding-top: 100px;
             /* Compensate for header height */
