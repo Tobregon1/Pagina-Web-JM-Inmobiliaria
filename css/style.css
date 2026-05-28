@@ -153,16 +153,20 @@ img {
 
 .contact-btn {
     background-color: var(--primary-color);
-    color: var(--white);
+    color: var(--white) !important;
     padding: 10px 25px;
     border-radius: 5px;
     font-weight: 500;
     transition: var(--transition);
 }
 
+.nav-link.contact-btn.active {
+    color: var(--white) !important;
+}
+
 .contact-btn:hover {
     background-color: #002a7a;
-    color: var(--white);
+    color: var(--white) !important;
     transform: translateY(-2px);
     box-shadow: var(--shadow);
 }
